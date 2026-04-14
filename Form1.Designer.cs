@@ -30,10 +30,13 @@
         {
             this.lblTitle = new DevExpress.XtraEditors.LabelControl();
             this.pictureEdit1 = new DevExpress.XtraEditors.PictureEdit();
-            this.labelControl1 = new DevExpress.XtraEditors.LabelControl();
+            this.labelControl3 = new DevExpress.XtraEditors.LabelControl();
             this.cmbMode = new DevExpress.XtraEditors.ComboBoxEdit();
+            this.labelControl1 = new DevExpress.XtraEditors.LabelControl();
+            this.txtUser = new DevExpress.XtraEditors.TextEdit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureEdit1.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmbMode.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.txtUser.Properties)).BeginInit();
             this.SuspendLayout();
             // 
             // lblTitle
@@ -56,15 +59,15 @@
             this.pictureEdit1.Size = new System.Drawing.Size(187, 181);
             this.pictureEdit1.TabIndex = 1;
             // 
-            // labelControl1
+            // labelControl3
             // 
-            this.labelControl1.Appearance.Font = new System.Drawing.Font("Microsoft YaHei UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelControl1.Appearance.Options.UseFont = true;
-            this.labelControl1.Location = new System.Drawing.Point(340, 191);
-            this.labelControl1.Name = "labelControl1";
-            this.labelControl1.Size = new System.Drawing.Size(90, 24);
-            this.labelControl1.TabIndex = 2;
-            this.labelControl1.Text = "系统模式：";
+            this.labelControl3.Appearance.Font = new System.Drawing.Font("Microsoft YaHei UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelControl3.Appearance.Options.UseFont = true;
+            this.labelControl3.Location = new System.Drawing.Point(340, 191);
+            this.labelControl3.Name = "labelControl3";
+            this.labelControl3.Size = new System.Drawing.Size(90, 24);
+            this.labelControl3.TabIndex = 2;
+            this.labelControl3.Text = "系统模式：";
             // 
             // cmbMode
             // 
@@ -79,13 +82,32 @@
             this.cmbMode.Size = new System.Drawing.Size(150, 28);
             this.cmbMode.TabIndex = 3;
             // 
+            // labelControl1
+            // 
+            this.labelControl1.Appearance.Font = new System.Drawing.Font("Microsoft YaHei UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelControl1.Appearance.Options.UseFont = true;
+            this.labelControl1.Location = new System.Drawing.Point(376, 256);
+            this.labelControl1.Name = "labelControl1";
+            this.labelControl1.Size = new System.Drawing.Size(54, 24);
+            this.labelControl1.TabIndex = 4;
+            this.labelControl1.Text = "账号：";
+            // 
+            // txtUser
+            // 
+            this.txtUser.Location = new System.Drawing.Point(437, 256);
+            this.txtUser.Name = "txtUser";
+            this.txtUser.Size = new System.Drawing.Size(150, 28);
+            this.txtUser.TabIndex = 5;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(778, 494);
-            this.Controls.Add(this.cmbMode);
+            this.Controls.Add(this.txtUser);
             this.Controls.Add(this.labelControl1);
+            this.Controls.Add(this.cmbMode);
+            this.Controls.Add(this.labelControl3);
             this.Controls.Add(this.pictureEdit1);
             this.Controls.Add(this.lblTitle);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -96,6 +118,7 @@
             this.Text = "登录";
             ((System.ComponentModel.ISupportInitialize)(this.pictureEdit1.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmbMode.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.txtUser.Properties)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -105,8 +128,10 @@
 
         private DevExpress.XtraEditors.LabelControl lblTitle;
         private DevExpress.XtraEditors.PictureEdit pictureEdit1;
-        private DevExpress.XtraEditors.LabelControl labelControl1;
+        private DevExpress.XtraEditors.LabelControl labelControl3;
         private DevExpress.XtraEditors.ComboBoxEdit cmbMode;
+        private DevExpress.XtraEditors.LabelControl labelControl1;
+        private DevExpress.XtraEditors.TextEdit txtUser;
     }
 }
 

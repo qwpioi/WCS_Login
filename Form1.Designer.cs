@@ -36,6 +36,8 @@
             this.txtUser = new DevExpress.XtraEditors.TextEdit();
             this.labelControl2 = new DevExpress.XtraEditors.LabelControl();
             this.txtPwd = new DevExpress.XtraEditors.TextEdit();
+            this.btnLogin = new DevExpress.XtraEditors.SimpleButton();
+            this.btnCancel = new DevExpress.XtraEditors.SimpleButton();
             ((System.ComponentModel.ISupportInitialize)(this.pictureEdit1.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmbMode.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtUser.Properties)).BeginInit();
@@ -120,11 +122,29 @@
             this.txtPwd.Size = new System.Drawing.Size(150, 28);
             this.txtPwd.TabIndex = 7;
             // 
+            // btnLogin
+            // 
+            this.btnLogin.Location = new System.Drawing.Point(318, 405);
+            this.btnLogin.Name = "btnLogin";
+            this.btnLogin.Size = new System.Drawing.Size(112, 34);
+            this.btnLogin.TabIndex = 8;
+            this.btnLogin.Text = "登录";
+            // 
+            // btnCancel
+            // 
+            this.btnCancel.Location = new System.Drawing.Point(511, 405);
+            this.btnCancel.Name = "btnCancel";
+            this.btnCancel.Size = new System.Drawing.Size(112, 34);
+            this.btnCancel.TabIndex = 9;
+            this.btnCancel.Text = "取消";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(778, 494);
+            this.Controls.Add(this.btnCancel);
+            this.Controls.Add(this.btnLogin);
             this.Controls.Add(this.txtPwd);
             this.Controls.Add(this.labelControl2);
             this.Controls.Add(this.txtUser);
@@ -158,6 +178,8 @@
         private DevExpress.XtraEditors.TextEdit txtUser;
         private DevExpress.XtraEditors.LabelControl labelControl2;
         private DevExpress.XtraEditors.TextEdit txtPwd;
+        private DevExpress.XtraEditors.SimpleButton btnLogin;
+        private DevExpress.XtraEditors.SimpleButton btnCancel;
     }
 }
 

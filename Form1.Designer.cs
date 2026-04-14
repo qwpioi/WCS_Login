@@ -38,6 +38,7 @@
             this.txtPwd = new DevExpress.XtraEditors.TextEdit();
             this.btnLogin = new DevExpress.XtraEditors.SimpleButton();
             this.btnCancel = new DevExpress.XtraEditors.SimpleButton();
+            this.labelSupport = new DevExpress.XtraEditors.LabelControl();
             ((System.ComponentModel.ISupportInitialize)(this.pictureEdit1.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmbMode.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtUser.Properties)).BeginInit();
@@ -79,12 +80,14 @@
             this.cmbMode.EditValue = "运行模式";
             this.cmbMode.Location = new System.Drawing.Point(437, 191);
             this.cmbMode.Name = "cmbMode";
+            this.cmbMode.Properties.Appearance.Font = new System.Drawing.Font("Microsoft YaHei UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cmbMode.Properties.Appearance.Options.UseFont = true;
             this.cmbMode.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.cmbMode.Properties.Items.AddRange(new object[] {
             "运行模式",
             "配置模式"});
-            this.cmbMode.Size = new System.Drawing.Size(150, 28);
+            this.cmbMode.Size = new System.Drawing.Size(150, 30);
             this.cmbMode.TabIndex = 3;
             // 
             // labelControl1
@@ -124,7 +127,9 @@
             // 
             // btnLogin
             // 
-            this.btnLogin.Location = new System.Drawing.Point(318, 405);
+            this.btnLogin.Appearance.Font = new System.Drawing.Font("Microsoft YaHei UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnLogin.Appearance.Options.UseFont = true;
+            this.btnLogin.Location = new System.Drawing.Point(327, 367);
             this.btnLogin.Name = "btnLogin";
             this.btnLogin.Size = new System.Drawing.Size(112, 34);
             this.btnLogin.TabIndex = 8;
@@ -132,17 +137,32 @@
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(511, 405);
+            this.btnCancel.Appearance.Font = new System.Drawing.Font("Microsoft YaHei UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnCancel.Appearance.Options.UseFont = true;
+            this.btnCancel.Location = new System.Drawing.Point(520, 367);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(112, 34);
             this.btnCancel.TabIndex = 9;
             this.btnCancel.Text = "取消";
+            // 
+            // labelSupport
+            // 
+            this.labelSupport.Appearance.Font = new System.Drawing.Font("Microsoft YaHei UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelSupport.Appearance.ForeColor = System.Drawing.SystemColors.GrayText;
+            this.labelSupport.Appearance.Options.UseFont = true;
+            this.labelSupport.Appearance.Options.UseForeColor = true;
+            this.labelSupport.Location = new System.Drawing.Point(247, 443);
+            this.labelSupport.Name = "labelSupport";
+            this.labelSupport.Size = new System.Drawing.Size(218, 24);
+            this.labelSupport.TabIndex = 10;
+            this.labelSupport.Text = "北京蓓安科仪——技术支持";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(778, 494);
+            this.Controls.Add(this.labelSupport);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnLogin);
             this.Controls.Add(this.txtPwd);
@@ -180,6 +200,7 @@
         private DevExpress.XtraEditors.TextEdit txtPwd;
         private DevExpress.XtraEditors.SimpleButton btnLogin;
         private DevExpress.XtraEditors.SimpleButton btnCancel;
+        private DevExpress.XtraEditors.LabelControl labelSupport;
     }
 }
 

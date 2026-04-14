@@ -34,9 +34,12 @@
             this.cmbMode = new DevExpress.XtraEditors.ComboBoxEdit();
             this.labelControl1 = new DevExpress.XtraEditors.LabelControl();
             this.txtUser = new DevExpress.XtraEditors.TextEdit();
+            this.labelControl2 = new DevExpress.XtraEditors.LabelControl();
+            this.txtPwd = new DevExpress.XtraEditors.TextEdit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureEdit1.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmbMode.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtUser.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.txtPwd.Properties)).BeginInit();
             this.SuspendLayout();
             // 
             // lblTitle
@@ -99,11 +102,31 @@
             this.txtUser.Size = new System.Drawing.Size(150, 28);
             this.txtUser.TabIndex = 5;
             // 
+            // labelControl2
+            // 
+            this.labelControl2.Appearance.Font = new System.Drawing.Font("Microsoft YaHei UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelControl2.Appearance.Options.UseFont = true;
+            this.labelControl2.Location = new System.Drawing.Point(376, 307);
+            this.labelControl2.Name = "labelControl2";
+            this.labelControl2.Size = new System.Drawing.Size(54, 24);
+            this.labelControl2.TabIndex = 6;
+            this.labelControl2.Text = "密码：";
+            // 
+            // txtPwd
+            // 
+            this.txtPwd.Location = new System.Drawing.Point(437, 305);
+            this.txtPwd.Name = "txtPwd";
+            this.txtPwd.Properties.PasswordChar = '*';
+            this.txtPwd.Size = new System.Drawing.Size(150, 28);
+            this.txtPwd.TabIndex = 7;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(778, 494);
+            this.Controls.Add(this.txtPwd);
+            this.Controls.Add(this.labelControl2);
             this.Controls.Add(this.txtUser);
             this.Controls.Add(this.labelControl1);
             this.Controls.Add(this.cmbMode);
@@ -119,6 +142,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureEdit1.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.cmbMode.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtUser.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.txtPwd.Properties)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -132,6 +156,8 @@
         private DevExpress.XtraEditors.ComboBoxEdit cmbMode;
         private DevExpress.XtraEditors.LabelControl labelControl1;
         private DevExpress.XtraEditors.TextEdit txtUser;
+        private DevExpress.XtraEditors.LabelControl labelControl2;
+        private DevExpress.XtraEditors.TextEdit txtPwd;
     }
 }
 

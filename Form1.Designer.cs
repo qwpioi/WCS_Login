@@ -29,6 +29,8 @@
         private void InitializeComponent()
         {
             this.lblTitle = new DevExpress.XtraEditors.LabelControl();
+            this.pictureEdit1 = new DevExpress.XtraEditors.PictureEdit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureEdit1.Properties)).BeginInit();
             this.SuspendLayout();
             // 
             // lblTitle
@@ -41,11 +43,22 @@
             this.lblTitle.TabIndex = 0;
             this.lblTitle.Text = "WCS-仓储控制系统";
             // 
+            // pictureEdit1
+            // 
+            this.pictureEdit1.EditValue = global::WCS_Login.Properties.Resources.user_icon;
+            this.pictureEdit1.Location = new System.Drawing.Point(22, 191);
+            this.pictureEdit1.Name = "pictureEdit1";
+            this.pictureEdit1.Properties.ShowCameraMenuItem = DevExpress.XtraEditors.Controls.CameraMenuItemVisibility.Auto;
+            this.pictureEdit1.Properties.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Stretch;
+            this.pictureEdit1.Size = new System.Drawing.Size(187, 181);
+            this.pictureEdit1.TabIndex = 1;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(778, 494);
+            this.Controls.Add(this.pictureEdit1);
             this.Controls.Add(this.lblTitle);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
@@ -53,6 +66,7 @@
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "登录";
+            ((System.ComponentModel.ISupportInitialize)(this.pictureEdit1.Properties)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -61,6 +75,7 @@
         #endregion
 
         private DevExpress.XtraEditors.LabelControl lblTitle;
+        private DevExpress.XtraEditors.PictureEdit pictureEdit1;
     }
 }
 

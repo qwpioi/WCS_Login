@@ -59,11 +59,11 @@ namespace WCS_Login
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
 
-                // TODO: 后续跳转到主窗体
-                // this.Hide();
-                // FrmMain main = new FrmMain();
-                // main.ShowDialog();
-                // this.Close();
+                // ✅ 打开主窗体
+                FrmMain mainForm = new FrmMain();
+                this.Hide();
+                mainForm.ShowDialog();
+                this.Close();
             }
             else
             {

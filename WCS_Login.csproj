@@ -116,6 +116,12 @@
     <Compile Include="FrmPLC_WriteAddress_Config.Designer.cs">
       <DependentUpon>FrmPLC_WriteAddress_Config.cs</DependentUpon>
     </Compile>
+    <Compile Include="FrmStation_Config.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmStation_Config.Designer.cs">
+      <DependentUpon>FrmStation_Config.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="FormLogin.resx">
@@ -144,6 +150,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FrmPLC_WriteAddress_Config.resx">
       <DependentUpon>FrmPLC_WriteAddress_Config.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmStation_Config.resx">
+      <DependentUpon>FrmStation_Config.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\licenses.licx" />
     <EmbeddedResource Include="Properties\Resources.resx">

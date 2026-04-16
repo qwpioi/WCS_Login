@@ -133,6 +133,8 @@ namespace WCS_Login
                     return new FrmBoxTask_Query();
                 case "手动调试":  // ← 添加这个
                     return new FrmManualDebug();
+                case "站点信息配置":  // ← 添加这个
+                    return new FrmStation_Config();
                 default:
                     XtraMessageBox.Show($"暂未实现：{menuText}");
                     return null;

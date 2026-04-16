@@ -80,6 +80,12 @@
     <Compile Include="FrmBoxScanRecord_Query.Designer.cs">
       <DependentUpon>FrmBoxScanRecord_Query.cs</DependentUpon>
     </Compile>
+    <Compile Include="FrmBoxTask_Query.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmBoxTask_Query.Designer.cs">
+      <DependentUpon>FrmBoxTask_Query.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrmEthernetScanner_Config.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -114,6 +120,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FrmBoxScanRecord_Query.resx">
       <DependentUpon>FrmBoxScanRecord_Query.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmBoxTask_Query.resx">
+      <DependentUpon>FrmBoxTask_Query.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FrmEthernetScanner_Config.resx">
       <DependentUpon>FrmEthernetScanner_Config.cs</DependentUpon>

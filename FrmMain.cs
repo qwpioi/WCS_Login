@@ -86,7 +86,47 @@ namespace WCS_Login
         }
         private void OpenSubForm(string menuText)
         {
-            XtraMessageBox.Show($"打开：{menuText}", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            // 检查是否已存在该子窗体
+            Form existingForm = FindChildForm(menuText);
+
+            if (existingForm != null)
+            {
+                // 已存在 → 激活并前置
+                existingForm.Activate();
+                return;
+            }
+
+            // 不存在 → 创建新实例
+            Form childForm = CreateChildForm(menuText);
+            if (childForm != null)
+            {
+                childForm.MdiParent = this;
+                childForm.Show();
+            }
+        }
+        private Form FindChildForm(string menuText)
+        {
+            foreach (Form form in this.MdiChildren)
+            {
+                if (form.Text == menuText)
+                {
+                    return form;
+                }
+            }
+            return null;
+        }
+
+        private Form CreateChildForm(string menuText)
+        {
+            switch (menuText)
+            {
+                case "PLC_IP 配置":
+                    return new FrmPLC_IP_Config();
+                default:
+                    XtraMessageBox.Show($"暂未实现：{menuText}");
+                    return null;
+            }
         }
     }
 }

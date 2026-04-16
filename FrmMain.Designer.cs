@@ -73,6 +73,7 @@
             this.ribbonPage_Help});
             this.ribbonControl1.Size = new System.Drawing.Size(1178, 225);
             this.ribbonControl1.StatusBar = this.ribbonStatusBar1;
+            this.ribbonControl1.Click += new System.EventHandler(this.ribbonControl1_Click);
             // 
             // barLinkUser
             // 
@@ -248,6 +249,7 @@
             this.Controls.Add(this.dockPanel1);
             this.Controls.Add(this.ribbonStatusBar1);
             this.Controls.Add(this.ribbonControl1);
+            this.IsMdiContainer = true;
             this.Name = "FrmMain";
             this.Text = "FrmMain";
             ((System.ComponentModel.ISupportInitialize)(this.ribbonControl1)).EndInit();

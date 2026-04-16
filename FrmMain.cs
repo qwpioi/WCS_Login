@@ -127,10 +127,17 @@ namespace WCS_Login
                     return new FrmEthernetScanner_Config();
                 case "周转箱扫描记录查询":  // ← 添加这个
                     return new FrmBoxScanRecord_Query();
+                case "PLC 写变量地址配置":  // ← 添加这个
+                    return new FrmPLC_WriteAddress_Config();
                 default:
                     XtraMessageBox.Show($"暂未实现：{menuText}");
                     return null;
             }
+        }
+
+        private void ribbonControl1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

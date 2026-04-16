@@ -131,6 +131,8 @@ namespace WCS_Login
                     return new FrmPLC_WriteAddress_Config();
                 case "周转箱定义任务查询":  // ← 添加这个
                     return new FrmBoxTask_Query();
+                case "手动调试":  // ← 添加这个
+                    return new FrmManualDebug();
                 default:
                     XtraMessageBox.Show($"暂未实现：{menuText}");
                     return null;

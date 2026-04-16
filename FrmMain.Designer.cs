@@ -169,8 +169,8 @@
             this.dockPanel1.ID = new System.Guid("9621b2d4-0c42-4f25-8a09-efd7aeea9058");
             this.dockPanel1.Location = new System.Drawing.Point(0, 225);
             this.dockPanel1.Name = "dockPanel1";
-            this.dockPanel1.OriginalSize = new System.Drawing.Size(236, 200);
-            this.dockPanel1.Size = new System.Drawing.Size(236, 429);
+            this.dockPanel1.OriginalSize = new System.Drawing.Size(260, 200);
+            this.dockPanel1.Size = new System.Drawing.Size(260, 429);
             this.dockPanel1.Text = "dockPanel1";
             // 
             // dockPanel1_Container
@@ -178,7 +178,7 @@
             this.dockPanel1_Container.Controls.Add(this.treeList1);
             this.dockPanel1_Container.Location = new System.Drawing.Point(4, 38);
             this.dockPanel1_Container.Name = "dockPanel1_Container";
-            this.dockPanel1_Container.Size = new System.Drawing.Size(225, 387);
+            this.dockPanel1_Container.Size = new System.Drawing.Size(249, 387);
             this.dockPanel1_Container.TabIndex = 0;
             // 
             // treeList1
@@ -224,7 +224,7 @@
             "箱子已到达站点查询"}, 10);
             this.treeList1.EndUnboundLoad();
             this.treeList1.OptionsBehavior.Editable = false;
-            this.treeList1.Size = new System.Drawing.Size(225, 387);
+            this.treeList1.Size = new System.Drawing.Size(249, 387);
             this.treeList1.TabIndex = 0;
             this.treeList1.Click += new System.EventHandler(this.treeList1_Click);
             // 

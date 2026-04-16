@@ -1,6 +1,6 @@
 ﻿namespace WCS_Login
 {
-    partial class Form1
+    partial class FormLogin
     {
         /// <summary>
         /// 必需的设计器变量。

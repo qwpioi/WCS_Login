@@ -123,6 +123,10 @@ namespace WCS_Login
             {
                 case "PLC_IP 配置":
                     return new FrmPLC_IP_Config();
+                case "以太网扫描器配置":  // ← 添加这个 case
+                    return new FrmEthernetScanner_Config();
+                case "周转箱扫描记录查询":  // ← 添加这个
+                    return new FrmBoxScanRecord_Query();
                 default:
                     XtraMessageBox.Show($"暂未实现：{menuText}");
                     return null;

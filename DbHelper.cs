@@ -5,7 +5,7 @@ using System.Configuration;
 
 namespace WCS_Login
 {
-    public class DbHelper
+    public static class DbHelper
     {
         // 获取连接字符串
         private static string connStr = ConfigurationManager.ConnectionStrings["WCS_Connection"].ConnectionString;

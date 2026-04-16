@@ -1,0 +1,202 @@
+﻿using System;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace WCS_Login.Utils
+{
+    /// <summary>
+    /// TCP 读码器监听器
+    /// 监听 TCP 端口，接收读码器数据
+    /// 数据格式：<编号> 箱号<EOF>
+    /// </summary>
+    public class TcpScannerListener
+    {
+        private TcpListener _listener;
+        private bool _isListening = false;
+        private int _port;
+        private Task _listenTask;  // ← 添加这个，保存任务引用
+
+        /// <summary>
+        /// 数据接收事件
+        /// </summary>
+        public event EventHandler<ScannerDataEventArgs> DataReceived;
+
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="port">监听端口（默认 8899）</param>
+        public TcpScannerListener(int port = 8899)
+        {
+            _port = port;
+        }
+
+        /// <summary>
+        /// 开始监听
+        /// </summary>
+        public void StartListening()
+        {
+            if (_isListening) return;
+
+            try
+            {
+                _listener = new TcpListener(IPAddress.Any, _port);
+                _listener.Start();
+                _isListening = true;
+
+                Console.WriteLine($"TCP 监听器已启动，端口：{_port}");
+
+                // 在后台运行，保存任务引用
+                _listenTask = Task.Run(async () =>
+                {
+                    while (_isListening)
+                    {
+                        try
+                        {
+                            TcpClient client = await _listener.AcceptTcpClientAsync();
+                            _ = ProcessClientAsync(client);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"接受客户端失败：{ex.Message}");
+                        }
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"TCP 监听器启动失败：{ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// 处理客户端连接
+        /// </summary>
+        private async Task ProcessClientAsync(TcpClient client)
+        {
+            try
+            {
+                NetworkStream stream = client.GetStream();
+                byte[] buffer = new byte[1024];
+                int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
+
+                if (bytesRead > 0)
+                {
+                    string rawData = Encoding.ASCII.GetString(buffer, 0, bytesRead);
+                    string boxNo = ParseBoxNo(rawData);
+
+                    Console.WriteLine($"收到读码器数据：{rawData}");
+                    Console.WriteLine($"解析箱号：{boxNo}");
+
+                    // 触发事件
+                    OnDataReceived(new ScannerDataEventArgs
+                    {
+                        RawData = rawData,
+                        BoxNo = boxNo,
+                        ReceiveTime = DateTime.Now
+                    });
+                }
+
+                client.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"处理客户端失败：{ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// 解析箱号 - 截取 <> 中间的内容
+        /// </summary>
+        /// <param name="rawData">原始数据：<编号> 箱号<EOF></param>
+        /// <returns>箱号</returns>
+        private string ParseBoxNo(string rawData)
+        {
+            try
+            {
+                // 格式：<编号> 箱号<EOF>
+                // 示例：<001>11111<EOF>
+                int startIndex = rawData.IndexOf('<');
+                int endIndex = rawData.IndexOf('<', startIndex + 1);
+
+                if (startIndex >= 0 && endIndex > startIndex)
+                {
+                    int eofIndex = rawData.IndexOf('>', endIndex);
+                    if (eofIndex > endIndex)
+                    {
+                        return rawData.Substring(endIndex + 1, eofIndex - endIndex - 1);
+                    }
+                }
+
+                return rawData; // 解析失败返回原始数据
+            }
+            catch
+            {
+                return rawData;
+            }
+        }
+
+        /// <summary>
+        /// 触发数据接收事件
+        /// </summary>
+        protected virtual void OnDataReceived(ScannerDataEventArgs e)
+        {
+            DataReceived?.Invoke(this, e);
+        }
+
+        /// <summary>
+        /// 停止监听
+        /// </summary>
+        public void StopListening()
+        {
+            _isListening = false;
+
+            // 停止监听器
+            try
+            {
+                _listener?.Stop();
+                Console.WriteLine("TCP 监听器已停止");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"停止监听器失败：{ex.Message}");
+            }
+
+            // 等待后台线程退出（最多等待 2 秒）
+            if (_listenTask != null)
+            {
+                try
+                {
+                    _listenTask.Wait(TimeSpan.FromSeconds(2));
+                    Console.WriteLine("后台监听线程已退出");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"等待线程退出失败：{ex.Message}");
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// 读码器数据事件参数
+    /// </summary>
+    public class ScannerDataEventArgs : EventArgs
+    {
+        /// <summary>
+        /// 原始数据
+        /// </summary>
+        public string RawData { get; set; }
+
+        /// <summary>
+        /// 箱号
+        /// </summary>
+        public string BoxNo { get; set; }
+
+        /// <summary>
+        /// 接收时间
+        /// </summary>
+        public DateTime ReceiveTime { get; set; }
+    }
+}

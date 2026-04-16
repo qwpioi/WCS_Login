@@ -62,8 +62,8 @@ namespace WCS_Login
                 // ✅ 打开主窗体
                 FrmMain mainForm = new FrmMain();
                 this.Hide();
-                mainForm.ShowDialog();
-                this.Close();
+                mainForm.Show();
+                //this.Close();
             }
             else
             {

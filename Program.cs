@@ -16,7 +16,7 @@ namespace WCS_Login
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new FrmMain());
+            Application.Run(new FormLogin());
         }
     }
 }

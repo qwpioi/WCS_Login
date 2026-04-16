@@ -46,6 +46,7 @@
             this.treeList1 = new DevExpress.XtraTreeList.TreeList();
             this.colName = new DevExpress.XtraTreeList.Columns.TreeListColumn();
             this.xtraTabbedMdiManager1 = new DevExpress.XtraTabbedMdi.XtraTabbedMdiManager(this.components);
+            this.barStaticItem1 = new DevExpress.XtraBars.BarStaticItem();
             ((System.ComponentModel.ISupportInitialize)(this.ribbonControl1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dockManager1)).BeginInit();
             this.dockPanel1.SuspendLayout();
@@ -64,9 +65,10 @@
             this.barLinkDate,
             this.barLinkCount,
             this.btnExit,
-            this.btnAbout});
+            this.btnAbout,
+            this.barStaticItem1});
             this.ribbonControl1.Location = new System.Drawing.Point(0, 0);
-            this.ribbonControl1.MaxItemId = 6;
+            this.ribbonControl1.MaxItemId = 7;
             this.ribbonControl1.Name = "ribbonControl1";
             this.ribbonControl1.Pages.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPage[] {
             this.ribbonPage_System,
@@ -138,6 +140,7 @@
             this.ribbonStatusBar1.ItemLinks.Add(this.barLinkUser);
             this.ribbonStatusBar1.ItemLinks.Add(this.barLinkDate);
             this.ribbonStatusBar1.ItemLinks.Add(this.barLinkCount);
+            this.ribbonStatusBar1.ItemLinks.Add(this.barStaticItem1);
             this.ribbonStatusBar1.Location = new System.Drawing.Point(0, 654);
             this.ribbonStatusBar1.Name = "ribbonStatusBar1";
             this.ribbonStatusBar1.Ribbon = this.ribbonControl1;
@@ -241,6 +244,13 @@
             // 
             this.xtraTabbedMdiManager1.MdiParent = this;
             // 
+            // barStaticItem1
+            // 
+            this.barStaticItem1.Caption = "WCS 系统：未启动";
+            this.barStaticItem1.Id = 6;
+            this.barStaticItem1.Name = "barStaticItem1";
+            this.barStaticItem1.PaintStyle = DevExpress.XtraBars.BarItemPaintStyle.Caption;
+            // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
@@ -282,5 +292,6 @@
         private DevExpress.XtraBars.Ribbon.RibbonPageGroup ribbonPageGroup_About;
         private DevExpress.XtraTreeList.Columns.TreeListColumn colName;
         private DevExpress.XtraTabbedMdi.XtraTabbedMdiManager xtraTabbedMdiManager1;
+        private DevExpress.XtraBars.BarStaticItem barStaticItem1;
     }
 }

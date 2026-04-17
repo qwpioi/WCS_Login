@@ -40,6 +40,7 @@
             this.barDockControlBottom = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlLeft = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlRight = new DevExpress.XtraBars.BarDockControl();
+            this.btnQuery = new DevExpress.XtraBars.BarButtonItem();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -57,9 +58,10 @@
             this.btnExport,
             this.btnSave,
             this.btnDelete,
-            this.btnRefresh});
+            this.btnRefresh,
+            this.btnQuery});
             this.barManager1.MainMenu = this.bar2;
-            this.barManager1.MaxItemId = 4;
+            this.barManager1.MaxItemId = 5;
             this.barManager1.StatusBar = this.bar3;
             // 
             // bar2
@@ -72,7 +74,8 @@
             new DevExpress.XtraBars.LinkPersistInfo(this.btnExport),
             new DevExpress.XtraBars.LinkPersistInfo(this.btnSave),
             new DevExpress.XtraBars.LinkPersistInfo(this.btnDelete),
-            new DevExpress.XtraBars.LinkPersistInfo(this.btnRefresh)});
+            new DevExpress.XtraBars.LinkPersistInfo(this.btnRefresh),
+            new DevExpress.XtraBars.LinkPersistInfo(this.btnQuery)});
             this.bar2.OptionsBar.MultiLine = true;
             this.bar2.OptionsBar.UseWholeRow = true;
             this.bar2.Text = "Main menu";
@@ -129,7 +132,7 @@
             // 
             this.barDockControlBottom.CausesValidation = false;
             this.barDockControlBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.barDockControlBottom.Location = new System.Drawing.Point(0, 450);
+            this.barDockControlBottom.Location = new System.Drawing.Point(0, 430);
             this.barDockControlBottom.Manager = this.barManager1;
             this.barDockControlBottom.Size = new System.Drawing.Size(800, 20);
             // 
@@ -139,7 +142,7 @@
             this.barDockControlLeft.Dock = System.Windows.Forms.DockStyle.Left;
             this.barDockControlLeft.Location = new System.Drawing.Point(0, 31);
             this.barDockControlLeft.Manager = this.barManager1;
-            this.barDockControlLeft.Size = new System.Drawing.Size(0, 419);
+            this.barDockControlLeft.Size = new System.Drawing.Size(0, 399);
             // 
             // barDockControlRight
             // 
@@ -147,7 +150,14 @@
             this.barDockControlRight.Dock = System.Windows.Forms.DockStyle.Right;
             this.barDockControlRight.Location = new System.Drawing.Point(800, 31);
             this.barDockControlRight.Manager = this.barManager1;
-            this.barDockControlRight.Size = new System.Drawing.Size(0, 419);
+            this.barDockControlRight.Size = new System.Drawing.Size(0, 399);
+            // 
+            // btnQuery
+            // 
+            this.btnQuery.Caption = "查询 (&Q)";
+            this.btnQuery.Hint = "查询数据";
+            this.btnQuery.Id = 4;
+            this.btnQuery.Name = "btnQuery";
             // 
             // FrmBase
             // 
@@ -163,6 +173,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
+
         }
 
         #endregion
@@ -173,10 +184,12 @@
         protected DevExpress.XtraBars.BarButtonItem btnSave;
         protected DevExpress.XtraBars.BarButtonItem btnDelete;
         protected DevExpress.XtraBars.BarButtonItem btnRefresh;
+        protected DevExpress.XtraBars.BarButtonItem btnQuery;
         protected DevExpress.XtraBars.Bar bar3;
         protected DevExpress.XtraBars.BarDockControl barDockControlTop;
         protected DevExpress.XtraBars.BarDockControl barDockControlBottom;
         protected DevExpress.XtraBars.BarDockControl barDockControlLeft;
         protected DevExpress.XtraBars.BarDockControl barDockControlRight;
+        
     }
 }

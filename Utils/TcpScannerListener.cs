@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using WCS_Login.Utils;  // ← 添加这个（如果还没有）
 
 namespace WCS_Login.Utils
 {
@@ -75,8 +76,22 @@ namespace WCS_Login.Utils
         /// </summary>
         private async Task ProcessClientAsync(TcpClient client)
         {
+            string clientIp = ((IPEndPoint)client.Client.RemoteEndPoint).Address.ToString();
+            int clientPort = ((IPEndPoint)client.Client.RemoteEndPoint).Port;
+
             try
             {
+                // 【新增】记录连接日志
+                Console.WriteLine($"读码器已连接：{clientIp}:{clientPort}");
+                Logger.Info($"读码器已连接：{clientIp}:{clientPort}");
+                DbHelper.LogToDatabase(
+                    Program.CurrentUserName,
+                    "连接",
+                    "读码器",
+                    $"读码器已连接：{clientIp}:{clientPort}",
+                    "INFO"
+                );
+
                 NetworkStream stream = client.GetStream();
                 byte[] buffer = new byte[1024];
                 int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
@@ -88,6 +103,16 @@ namespace WCS_Login.Utils
 
                     Console.WriteLine($"收到读码器数据：{rawData}");
                     Console.WriteLine($"解析箱号：{boxNo}");
+
+                    // 【新增】记录扫描日志
+                    Logger.Info($"读码器扫描：{boxNo} (来源：{clientIp}:{clientPort})");
+                    DbHelper.LogToDatabase(
+                        Program.CurrentUserName,
+                        "扫描",
+                        "读码器",
+                        $"收到箱号：{boxNo}，来源：{clientIp}:{clientPort}",
+                        "INFO"
+                    );
 
                     // 触发事件
                     OnDataReceived(new ScannerDataEventArgs
@@ -103,6 +128,28 @@ namespace WCS_Login.Utils
             catch (Exception ex)
             {
                 Console.WriteLine($"处理客户端失败：{ex.Message}");
+                // 【新增】记录错误日志
+                Logger.Error($"处理客户端失败：{ex.Message}");
+                DbHelper.LogToDatabase(
+                    Program.CurrentUserName,
+                    "错误",
+                    "读码器",
+                    $"处理客户端失败：{ex.Message}",
+                    "ERROR"
+                );
+            }
+            finally
+            {
+                // 【新增】记录断开日志
+                Console.WriteLine($"读码器断开连接：{clientIp}:{clientPort}");
+                Logger.Info($"读码器断开连接：{clientIp}:{clientPort}");
+                DbHelper.LogToDatabase(
+                    Program.CurrentUserName,
+                    "断开",
+                    "读码器",
+                    $"读码器断开连接：{clientIp}:{clientPort}",
+                    "INFO"
+                );
             }
         }
 

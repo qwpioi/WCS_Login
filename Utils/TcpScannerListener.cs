@@ -117,22 +117,33 @@ namespace WCS_Login.Utils
             {
                 // 格式：<编号> 箱号<EOF>
                 // 示例：<001>11111<EOF>
-                int startIndex = rawData.IndexOf('<');
-                int endIndex = rawData.IndexOf('<', startIndex + 1);
+                // 目标：提取 11111
 
-                if (startIndex >= 0 && endIndex > startIndex)
+                // 1. 找到第一个 '>' 的位置（编号结束）
+                int firstEndIndex = rawData.IndexOf('>');
+                if (firstEndIndex < 0)
                 {
-                    int eofIndex = rawData.IndexOf('>', endIndex);
-                    if (eofIndex > endIndex)
-                    {
-                        return rawData.Substring(endIndex + 1, eofIndex - endIndex - 1);
-                    }
+                    Console.WriteLine("格式错误：未找到第一个 '>'");
+                    return rawData;
                 }
 
-                return rawData; // 解析失败返回原始数据
+                // 2. 找到 '<EOF>' 的位置
+                int eofIndex = rawData.IndexOf("<EOF>");
+                if (eofIndex < 0)
+                {
+                    Console.WriteLine("格式错误：未找到 '<EOF>'");
+                    return rawData;
+                }
+
+                // 3. 截取箱号（从第一个 '>' 后面到 '<EOF>' 前面）
+                string boxNo = rawData.Substring(firstEndIndex + 1, eofIndex - firstEndIndex - 1);
+
+                Console.WriteLine($"解析成功：'{boxNo}'");
+                return boxNo.Trim();
             }
-            catch
+            catch (Exception ex)
             {
+                Console.WriteLine($"解析异常：{ex.Message}");
                 return rawData;
             }
         }

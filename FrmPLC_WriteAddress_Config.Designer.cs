@@ -53,7 +53,6 @@
             this.gridControl1.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gridView1});
             this.gridControl1.Load += new System.EventHandler(this.FrmPLC_WriteAddress_Config_Load);
-            this.gridControl1.Click += new System.EventHandler(this.gridControl1_Click);
             // 
             // gridView1
             // 
@@ -146,7 +145,6 @@
             this.Controls.Add(this.gridControl1);
             this.Name = "FrmPLC_WriteAddress_Config";
             this.Text = "FrmPLC_WriteAddress_Config";
-            this.Load += new System.EventHandler(this.FrmPLC_WriteAddress_Config_Load);
             this.Controls.SetChildIndex(this.gridControl1, 0);
             ((System.ComponentModel.ISupportInitialize)(this.gridControl1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridView1)).EndInit();

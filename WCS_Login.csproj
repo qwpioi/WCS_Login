@@ -45,6 +45,12 @@
     <Reference Include="DevExpress.XtraLayout.v22.2, Version=22.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
     <Reference Include="DevExpress.XtraPrinting.v22.2, Version=22.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
     <Reference Include="DevExpress.XtraTreeList.v22.2, Version=22.2.4.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="HslCommunication, Version=12.7.0.0, Culture=neutral, PublicKeyToken=3d72ad3b6b5ec0e3, processorArchitecture=MSIL">
+      <HintPath>packages\HslCommunication.12.7.0\lib\net451\HslCommunication.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
@@ -61,101 +67,110 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DbHelper.cs" />
-    <Compile Include="FormLogin.cs">
+    <Compile Include="DAL\DbHelper.cs" />
+    <Compile Include="Forms\FormLogin.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormLogin.Designer.cs">
+    <Compile Include="Forms\FormLogin.Designer.cs">
       <DependentUpon>FormLogin.cs</DependentUpon>
     </Compile>
-    <Compile Include="FrmBase.cs">
+    <Compile Include="Forms\FrmBase.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FrmBase.Designer.cs">
+    <Compile Include="Forms\FrmBase.Designer.cs">
       <DependentUpon>FrmBase.cs</DependentUpon>
     </Compile>
-    <Compile Include="FrmBoxScanRecord_Query.cs">
+    <Compile Include="Forms\FrmBoxScanRecord_Query.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FrmBoxScanRecord_Query.Designer.cs">
+    <Compile Include="Forms\FrmBoxScanRecord_Query.Designer.cs">
       <DependentUpon>FrmBoxScanRecord_Query.cs</DependentUpon>
     </Compile>
-    <Compile Include="FrmBoxTask_Query.cs">
+    <Compile Include="Forms\FrmBoxTask_Query.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FrmBoxTask_Query.Designer.cs">
+    <Compile Include="Forms\FrmBoxTask_Query.Designer.cs">
       <DependentUpon>FrmBoxTask_Query.cs</DependentUpon>
     </Compile>
-    <Compile Include="FrmEthernetScanner_Config.cs">
+    <Compile Include="Forms\FrmEthernetScanner_Config.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FrmEthernetScanner_Config.Designer.cs">
+    <Compile Include="Forms\FrmEthernetScanner_Config.Designer.cs">
       <DependentUpon>FrmEthernetScanner_Config.cs</DependentUpon>
     </Compile>
-    <Compile Include="FrmMain.cs">
+    <Compile Include="Forms\FrmMain.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FrmMain.Designer.cs">
+    <Compile Include="Forms\FrmMain.Designer.cs">
       <DependentUpon>FrmMain.cs</DependentUpon>
     </Compile>
-    <Compile Include="FrmManualDebug.cs">
+    <Compile Include="Forms\FrmManualDebug.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FrmManualDebug.Designer.cs">
+    <Compile Include="Forms\FrmManualDebug.Designer.cs">
       <DependentUpon>FrmManualDebug.cs</DependentUpon>
     </Compile>
-    <Compile Include="FrmPLC_IP_Config.cs">
+    <Compile Include="Forms\FrmPLC_IP_Config.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FrmPLC_IP_Config.Designer.cs">
+    <Compile Include="Forms\FrmPLC_IP_Config.Designer.cs">
       <DependentUpon>FrmPLC_IP_Config.cs</DependentUpon>
     </Compile>
-    <Compile Include="FrmPLC_WriteAddress_Config.cs">
+    <Compile Include="Forms\FrmPLC_Monitor.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FrmPLC_WriteAddress_Config.Designer.cs">
+    <Compile Include="Forms\FrmPLC_Monitor.Designer.cs">
+      <DependentUpon>FrmPLC_Monitor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FrmPLC_WriteAddress_Config.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmPLC_WriteAddress_Config.Designer.cs">
       <DependentUpon>FrmPLC_WriteAddress_Config.cs</DependentUpon>
     </Compile>
-    <Compile Include="FrmStation_Config.cs">
+    <Compile Include="Forms\FrmStation_Config.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FrmStation_Config.Designer.cs">
+    <Compile Include="Forms\FrmStation_Config.Designer.cs">
       <DependentUpon>FrmStation_Config.cs</DependentUpon>
     </Compile>
-    <Compile Include="Logger.cs" />
+    <Compile Include="Utils\Logger.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Utils\S7PlcHelper.cs" />
-    <Compile Include="Utils\TcpScannerListener.cs" />
-    <Compile Include="Utils\WcsController.cs" />
-    <EmbeddedResource Include="FormLogin.resx">
+    <Compile Include="PLC\S7PlcHelper.cs" />
+    <Compile Include="PLC\TcpScannerListener.cs" />
+    <Compile Include="WCS\WcsController.cs" />
+    <EmbeddedResource Include="Forms\FormLogin.resx">
       <DependentUpon>FormLogin.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FrmBase.resx">
+    <EmbeddedResource Include="Forms\FrmBase.resx">
       <DependentUpon>FrmBase.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FrmBoxScanRecord_Query.resx">
+    <EmbeddedResource Include="Forms\FrmBoxScanRecord_Query.resx">
       <DependentUpon>FrmBoxScanRecord_Query.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FrmBoxTask_Query.resx">
+    <EmbeddedResource Include="Forms\FrmBoxTask_Query.resx">
       <DependentUpon>FrmBoxTask_Query.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FrmEthernetScanner_Config.resx">
+    <EmbeddedResource Include="Forms\FrmEthernetScanner_Config.resx">
       <DependentUpon>FrmEthernetScanner_Config.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FrmMain.resx">
+    <EmbeddedResource Include="Forms\FrmMain.resx">
       <DependentUpon>FrmMain.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FrmManualDebug.resx">
+    <EmbeddedResource Include="Forms\FrmManualDebug.resx">
       <DependentUpon>FrmManualDebug.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FrmPLC_IP_Config.resx">
+    <EmbeddedResource Include="Forms\FrmPLC_IP_Config.resx">
       <DependentUpon>FrmPLC_IP_Config.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FrmPLC_WriteAddress_Config.resx">
+    <EmbeddedResource Include="Forms\FrmPLC_Monitor.resx">
+      <DependentUpon>FrmPLC_Monitor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmPLC_WriteAddress_Config.resx">
       <DependentUpon>FrmPLC_WriteAddress_Config.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FrmStation_Config.resx">
+    <EmbeddedResource Include="Forms\FrmStation_Config.resx">
       <DependentUpon>FrmStation_Config.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\licenses.licx" />
@@ -169,6 +184,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

@@ -47,6 +47,17 @@ namespace WCS_Login
         }
 
         /// <summary>
+        /// 行号列数据
+        /// </summary>
+        private void gridView1_CustomUnboundColumnData(object sender, DevExpress.XtraGrid.Views.Base.CustomColumnDataEventArgs e)
+        {
+            if (e.Column.FieldName == "RowNo" && e.IsGetData)
+            {
+                e.Value = (e.ListSourceRowIndex + 1).ToString();
+            }
+        }
+
+        /// <summary>
         /// 加载数据
         /// </summary>
         private void LoadData()

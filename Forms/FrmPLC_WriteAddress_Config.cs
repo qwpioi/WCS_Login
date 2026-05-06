@@ -199,6 +199,17 @@ namespace WCS_Login
         }
 
         /// <summary>
+        /// 行号列数据
+        /// </summary>
+        private void gridView1_CustomUnboundColumnData(object sender, DevExpress.XtraGrid.Views.Base.CustomColumnDataEventArgs e)
+        {
+            if (e.Column.FieldName == "RowNo" && e.IsGetData)
+            {
+                e.Value = (e.ListSourceRowIndex + 1).ToString();
+            }
+        }
+
+        /// <summary>
         /// 重写新增按钮事件 — 在表格顶部插入空行
         /// </summary>
         protected override void BtnAdd_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)

@@ -37,6 +37,15 @@ WCS_Login/
 - **Deduplication**: 2-second window prevents duplicate box processing
 - **Cache**: Box rules cached in `ConcurrentDictionary`, refreshed every 5 minutes
 
+### DevExpress Grid Row Numbers
+
+All child forms with GridControl use an **Unbound Column** (`gridColumnRowNo`) for auto-numbered rows:
+
+1. **Designer.cs**: `gridColumnRowNo` declared, `UnboundDataType = typeof(string)`, `VisibleIndex = 0`, all other columns shifted +1, `CustomUnboundColumnData` event registered
+2. **Designer.cs bottom**: `private DevExpress.XtraGrid.Columns.GridColumn gridColumnRowNo;` field declaration (must not omit)
+3. **.cs file**: `gridView1_CustomUnboundColumnData` handler returns `(e.ListSourceRowIndex + 1).ToString()` when `e.Column.FieldName == "RowNo" && e.IsGetData`
+4. **Forms affected**: `FrmPLC_IP_Config`, `FrmEthernetScanner_Config`, `FrmStation_Config`, `FrmPLC_WriteAddress_Config`, `FrmBoxScanRecord_Query`, `FrmBoxTask_Query`, `FrmManualDebug`
+
 ### Control Values
 
 - `1111` = 直行 (straight pass-through)

@@ -23,6 +23,8 @@ namespace WCS_Login
             btnSave.ItemClick += BtnSave_ItemClick;
             btnDelete.ItemClick += BtnDelete_ItemClick;
             btnRefresh.ItemClick += BtnRefresh_ItemClick;
+            btnAdd.ItemClick += BtnAdd_ItemClick;
+            btnImport.ItemClick += BtnImport_ItemClick;
         }
 
         /// <summary>
@@ -68,6 +70,16 @@ namespace WCS_Login
         private void btnSave_ItemClick_1(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
 
+        }
+
+        protected virtual void BtnAdd_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            XtraMessageBox.Show("请在子类中实现新增逻辑", "提示");
+        }
+
+        protected virtual void BtnImport_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            XtraMessageBox.Show("请在子类中实现导入逻辑", "提示");
         }
     }
 }

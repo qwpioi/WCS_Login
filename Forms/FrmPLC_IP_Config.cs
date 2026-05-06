@@ -15,6 +15,8 @@ namespace WCS_Login
 {
     public partial class FrmPLC_IP_Config : FrmBase
     {
+        private DataTable _dataTable;
+
         public FrmPLC_IP_Config()
         {
             InitializeComponent();
@@ -42,8 +44,8 @@ namespace WCS_Login
         /// </summary>
         private void LoadData()
         {
-            string sql = "SELECT PlcNo, IP, Port, PlcType, HeartbeatAddress, Remark FROM T_PLC_IP_Config";
-            gridControl1.DataSource = DbHelper.ExecuteQuery(sql);
+            _dataTable = DbHelper.ExecuteQuery("SELECT PlcNo, IP, Port, PlcType, HeartbeatAddress, Remark FROM T_PLC_IP_Config");
+            gridControl1.DataSource = _dataTable;
         }
 
         /// <summary>
@@ -103,54 +105,92 @@ namespace WCS_Login
         }
 
         /// <summary>
-        /// 重写保存按钮事件
+        /// 重写保存按钮事件 — 同时支持新增和修改
         /// </summary>
         protected override void BtnSave_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
-            
             try
             {
-                gridView1.CloseEditor(); // 关闭当前编辑
+                gridView1.CloseEditor();
+                gridView1.UpdateCurrentRow();
 
-                var row = gridView1.GetFocusedRow();
-                if (row == null)
+                if (_dataTable == null || _dataTable.Rows.Count == 0)
                 {
-                    XtraMessageBox.Show("请选择要保存的记录！", "提示");
+                    XtraMessageBox.Show("没有要保存的数据！", "提示");
                     return;
                 }
 
-                // 获取当前行数据
-                string plcNo = gridView1.GetFocusedRowCellValue("PlcNo").ToString();
-                string ip = gridView1.GetFocusedRowCellValue("IP").ToString();
-                string port = gridView1.GetFocusedRowCellValue("Port").ToString();
-                string plcType = gridView1.GetFocusedRowCellValue("PlcType").ToString();
-                string heartbeatAddress = gridView1.GetFocusedRowCellValue("HeartbeatAddress").ToString();
-                string remark = gridView1.GetFocusedRowCellValue("Remark").ToString();
+                int insertCount = 0, updateCount = 0;
 
-                // 构建更新 SQL
-                string sql = @"UPDATE T_PLC_IP_Config
-                       SET IP = @IP, Port = @Port, PlcType = @PlcType,
-                           HeartbeatAddress = @HeartbeatAddress, Remark = @Remark
-                       WHERE PlcNo = @PlcNo";
-
-                SqlParameter[] parameters = {
-            new SqlParameter("@IP", ip),
-            new SqlParameter("@Port", port),
-            new SqlParameter("@PlcType", plcType),
-            new SqlParameter("@HeartbeatAddress", heartbeatAddress),
-            new SqlParameter("@Remark", remark),
-            new SqlParameter("@PlcNo", plcNo)
-        };
-
-                int rows = DbHelper.ExecuteNonQuery(sql, parameters);
-
-                if (rows > 0)
+                foreach (DataRow row in _dataTable.Rows)
                 {
-                    // 记录日志
-                    DbHelper.LogToDatabase(Program.CurrentUserName, "保存数据", "PLC 配置", $"修改 PLC {plcNo}", "INFO");
-                    Logger.Info($"用户 {Program.CurrentUserName} 保存 PLC IP 配置，PLC 编号：{plcNo}");
+                    if (row.RowState == DataRowState.Deleted) continue;
 
-                    XtraMessageBox.Show("保存成功！", "提示");
+                    string plcNo = row["PlcNo"]?.ToString()?.Trim();
+                    string ip = row["IP"]?.ToString()?.Trim();
+
+                    // 跳过空行
+                    if (string.IsNullOrEmpty(plcNo) && string.IsNullOrEmpty(ip)) continue;
+
+                    string port = row["Port"]?.ToString()?.Trim();
+                    string plcType = row["PlcType"]?.ToString()?.Trim();
+                    string heartbeatAddress = row["HeartbeatAddress"]?.ToString()?.Trim();
+                    string remark = row["Remark"]?.ToString()?.Trim();
+
+                    if (string.IsNullOrEmpty(ip))
+                    {
+                        XtraMessageBox.Show($"PLC 编号 {plcNo} 的 IP 地址不能为空！", "提示");
+                        return;
+                    }
+
+                    if (row.RowState == DataRowState.Added)
+                    {
+                        string insertSql = @"INSERT INTO T_PLC_IP_Config (PlcNo, IP, Port, PlcType, HeartbeatAddress, Remark)
+                                             VALUES (@PlcNo, @IP, @Port, @PlcType, @HeartbeatAddress, @Remark)";
+
+                        SqlParameter[] parameters = {
+                            new SqlParameter("@PlcNo", plcNo),
+                            new SqlParameter("@IP", ip),
+                            new SqlParameter("@Port", string.IsNullOrEmpty(port) ? (object)DBNull.Value : port),
+                            new SqlParameter("@PlcType", string.IsNullOrEmpty(plcType) ? (object)DBNull.Value : plcType),
+                            new SqlParameter("@HeartbeatAddress", string.IsNullOrEmpty(heartbeatAddress) ? (object)DBNull.Value : heartbeatAddress),
+                            new SqlParameter("@Remark", string.IsNullOrEmpty(remark) ? (object)DBNull.Value : remark)
+                        };
+
+                        DbHelper.ExecuteNonQuery(insertSql, parameters);
+                        insertCount++;
+                    }
+                    else
+                    {
+                        // PlcNo 有值说明是修改行
+                        string updateSql = @"UPDATE T_PLC_IP_Config
+                                             SET IP = @IP, Port = @Port, PlcType = @PlcType,
+                                                 HeartbeatAddress = @HeartbeatAddress, Remark = @Remark
+                                             WHERE PlcNo = @PlcNo";
+
+                        SqlParameter[] parameters = {
+                            new SqlParameter("@IP", ip),
+                            new SqlParameter("@Port", string.IsNullOrEmpty(port) ? (object)DBNull.Value : port),
+                            new SqlParameter("@PlcType", string.IsNullOrEmpty(plcType) ? (object)DBNull.Value : plcType),
+                            new SqlParameter("@HeartbeatAddress", string.IsNullOrEmpty(heartbeatAddress) ? (object)DBNull.Value : heartbeatAddress),
+                            new SqlParameter("@Remark", string.IsNullOrEmpty(remark) ? (object)DBNull.Value : remark),
+                            new SqlParameter("@PlcNo", plcNo)
+                        };
+
+                        DbHelper.ExecuteNonQuery(updateSql, parameters);
+                        updateCount++;
+                    }
+                }
+
+                if (insertCount > 0 || updateCount > 0)
+                {
+                    string msg = $"保存成功！";
+                    if (insertCount > 0) msg += $"\n新增 {insertCount} 条";
+                    if (updateCount > 0) msg += $"\n修改 {updateCount} 条";
+
+                    DbHelper.LogToDatabase(Program.CurrentUserName, "保存数据", "PLC 配置", $"新增 {insertCount} 条，修改 {updateCount} 条", "INFO");
+                    Logger.Info($"用户 {Program.CurrentUserName} 保存 PLC IP 配置，新增 {insertCount} 条，修改 {updateCount} 条");
+                    XtraMessageBox.Show(msg, "提示");
                     LoadData();
                 }
             }
@@ -158,7 +198,6 @@ namespace WCS_Login
             {
                 DbHelper.LogToDatabase(Program.CurrentUserName, "保存数据", "PLC 配置", $"保存失败：{ex.Message}", "ERROR");
                 Logger.Error($"保存失败：{ex.Message}", Program.CurrentUserName);
-
                 XtraMessageBox.Show($"保存失败：{ex.Message}", "错误");
             }
         }
@@ -228,6 +267,121 @@ namespace WCS_Login
             {
                 Logger.Error($"刷新失败：{ex.Message}", Program.CurrentUserName);
                 XtraMessageBox.Show($"刷新失败：{ex.Message}", "错误");
+            }
+        }
+
+        /// <summary>
+        /// 重写新增按钮事件 — 在表格顶部插入空行
+        /// </summary>
+        protected override void BtnAdd_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            DataRow newRow = _dataTable.NewRow();
+            _dataTable.Rows.InsertAt(newRow, 0);
+            gridView1.FocusedRowHandle = 0;
+            gridView1.ShowEditor();
+        }
+
+        /// <summary>
+        /// 行号列数据
+        /// </summary>
+        private void gridView1_CustomUnboundColumnData(object sender, DevExpress.XtraGrid.Views.Base.CustomColumnDataEventArgs e)
+        {
+            if (e.Column.FieldName == "RowNo" && e.IsGetData)
+            {
+                e.Value = (e.ListSourceRowIndex + 1).ToString();
+            }
+        }
+
+        /// <summary>
+        /// 重写导入按钮事件
+        /// </summary>
+        protected override void BtnImport_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            try
+            {
+                OpenFileDialog ofd = new OpenFileDialog();
+                ofd.Filter = "Excel 文件|*.xlsx;*.xls";
+                ofd.Title = "选择要导入的 Excel 文件";
+                if (ofd.ShowDialog() != DialogResult.OK) return;
+
+                string connStr;
+                string ext = System.IO.Path.GetExtension(ofd.FileName).ToLower();
+                if (ext == ".xlsx")
+                    connStr = $"Provider=Microsoft.ACE.OLEDB.12.0;Data Source={ofd.FileName};Extended Properties=\"Excel 12.0 Xml;HDR=Yes;IMEX=1\"";
+                else
+                    connStr = $"Provider=Microsoft.Jet.OLEDB.4.0;Data Source={ofd.FileName};Extended Properties=\"Excel 8.0;HDR=Yes;IMEX=1\"";
+
+                DataTable dtExcel = new DataTable();
+                using (var conn = new System.Data.OleDb.OleDbConnection(connStr))
+                {
+                    conn.Open();
+                    var schemaTable = conn.GetOleDbSchemaTable(System.Data.OleDb.OleDbSchemaGuid.Tables, null);
+                    if (schemaTable == null || schemaTable.Rows.Count == 0)
+                    {
+                        XtraMessageBox.Show("Excel 文件中没有找到工作表！", "提示");
+                        return;
+                    }
+                    string sheetName = schemaTable.Rows[0]["TABLE_NAME"].ToString();
+                    using (var cmd = new System.Data.OleDb.OleDbCommand($"SELECT * FROM [{sheetName}]", conn))
+                    using (var adapter = new System.Data.OleDb.OleDbDataAdapter(cmd))
+                    {
+                        adapter.Fill(dtExcel);
+                    }
+                }
+
+                if (dtExcel.Rows.Count == 0)
+                {
+                    XtraMessageBox.Show("Excel 文件中没有数据行！", "提示");
+                    return;
+                }
+
+                int successCount = 0, failCount = 0;
+                string insertSql = @"IF NOT EXISTS (SELECT 1 FROM T_PLC_IP_Config WHERE PlcNo = @PlcNo)
+                                     INSERT INTO T_PLC_IP_Config (PlcNo, IP, Port, PlcType, HeartbeatAddress, Remark)
+                                     VALUES (@PlcNo, @IP, @Port, @PlcType, @HeartbeatAddress, @Remark)";
+
+                for (int i = 0; i < dtExcel.Rows.Count; i++)
+                {
+                    try
+                    {
+                        string plcNo = dtExcel.Rows[i][0]?.ToString()?.Trim();
+                        string ip = dtExcel.Rows[i][1]?.ToString()?.Trim();
+                        string port = dtExcel.Rows[i][2]?.ToString()?.Trim();
+                        string plcType = dtExcel.Rows[i][3]?.ToString()?.Trim();
+                        string heartbeatAddress = dtExcel.Rows[i][4]?.ToString()?.Trim();
+                        string remark = dtExcel.Rows[i][5]?.ToString()?.Trim();
+
+                        if (string.IsNullOrEmpty(plcNo) || string.IsNullOrEmpty(ip)) continue;
+
+                        SqlParameter[] parameters = {
+                            new SqlParameter("@PlcNo", plcNo),
+                            new SqlParameter("@IP", ip),
+                            new SqlParameter("@Port", string.IsNullOrEmpty(port) ? (object)DBNull.Value : port),
+                            new SqlParameter("@PlcType", string.IsNullOrEmpty(plcType) ? (object)DBNull.Value : plcType),
+                            new SqlParameter("@HeartbeatAddress", string.IsNullOrEmpty(heartbeatAddress) ? (object)DBNull.Value : heartbeatAddress),
+                            new SqlParameter("@Remark", string.IsNullOrEmpty(remark) ? (object)DBNull.Value : remark)
+                        };
+
+                        int rows = DbHelper.ExecuteNonQuery(insertSql, parameters);
+                        successCount += rows;
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Error($"导入第 {i + 2} 行失败：{ex.Message}", Program.CurrentUserName);
+                        failCount++;
+                    }
+                }
+
+                DbHelper.LogToDatabase(Program.CurrentUserName, "导入数据", "PLC 配置", $"从 {ofd.FileName} 导入，成功 {successCount} 条，失败 {failCount} 条", "INFO");
+                Logger.Info($"用户 {Program.CurrentUserName} 导入 PLC IP 配置，成功 {successCount} 条，失败 {failCount} 条");
+                XtraMessageBox.Show($"导入完成！\n成功：{successCount} 条\n失败：{failCount} 条", "提示");
+                LoadData();
+            }
+            catch (Exception ex)
+            {
+                DbHelper.LogToDatabase(Program.CurrentUserName, "导入数据", "PLC 配置", $"导入失败：{ex.Message}", "ERROR");
+                Logger.Error($"导入失败：{ex.Message}", Program.CurrentUserName);
+                XtraMessageBox.Show($"导入失败：{ex.Message}", "错误");
             }
         }
 

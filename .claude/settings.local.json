@@ -4,7 +4,12 @@
       "Bash(sqlcmd *)",
       "mcp__notion__API-get-self",
       "mcp__notion__notion-search",
-      "mcp__notion__notion-fetch"
+      "mcp__notion__notion-fetch",
+      "mcp__notion__notion-update-page",
+      "Bash(msbuild WCS_Login.sln /t:Build /p:Configuration=Debug /v:q /nologo)",
+      "Bash(msbuild WCS_Login.csproj /t:Build /p:Configuration=Debug /v:q)",
+      "Bash(msbuild WCS_Login.csproj -t:Build -p:Configuration=Debug)",
+      "Bash(dotnet build *)"
     ]
   }
 }

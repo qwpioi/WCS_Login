@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -17,11 +17,12 @@ namespace WCS_Login
     {
         private System.Windows.Forms.Timer _autoRefreshTimer;
         private int _lastRecordCount = 0;
+
         public FrmBoxScanRecord_Query()
         {
             InitializeComponent();
             this.Text = "周转箱扫描记录查询";
-            
+
             InitAutoRefreshTimer();
         }
 
@@ -168,18 +169,18 @@ namespace WCS_Login
                 string stationName = gridView1.GetFocusedRowCellValue("StationName").ToString();
                 string remark = gridView1.GetFocusedRowCellValue("Remark").ToString();
 
-                string sql = @"UPDATE T_BoxScanRecord 
-                       SET BoxNo = @BoxNo, ScannerName = @ScannerName, ScanResult = @ScanResult, StationName = @StationName, Remark = @Remark 
+                string sql = @"UPDATE T_BoxScanRecord
+                       SET BoxNo = @BoxNo, ScannerName = @ScannerName, ScanResult = @ScanResult, StationName = @StationName, Remark = @Remark
                        WHERE Id = @Id";
 
                 SqlParameter[] parameters = {
-            new SqlParameter("@BoxNo", boxNo),
-            new SqlParameter("@ScannerName", scannerName),
-            new SqlParameter("@ScanResult", scanResult),
-            new SqlParameter("@StationName", stationName),
-            new SqlParameter("@Remark", remark),
-            new SqlParameter("@Id", id)
-        };
+                    new SqlParameter("@BoxNo", boxNo),
+                    new SqlParameter("@ScannerName", scannerName),
+                    new SqlParameter("@ScanResult", scanResult),
+                    new SqlParameter("@StationName", stationName),
+                    new SqlParameter("@Remark", remark),
+                    new SqlParameter("@Id", id)
+                };
 
                 int rows = DbHelper.ExecuteNonQuery(sql, parameters);
 
@@ -225,8 +226,8 @@ namespace WCS_Login
 
                 string sql = "DELETE FROM T_BoxScanRecord WHERE Id = @Id";
                 int rows = DbHelper.ExecuteNonQuery(sql, new SqlParameter[] {
-            new SqlParameter("@Id", id)
-        });
+                    new SqlParameter("@Id", id)
+                });
 
                 if (rows > 0)
                 {
@@ -278,9 +279,5 @@ namespace WCS_Login
             }
             base.OnFormClosing(e);
         }
-
-
-
-
     }
 }

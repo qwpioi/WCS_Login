@@ -1,4 +1,4 @@
-﻿namespace WCS_Login
+namespace WCS_Login
 {
     partial class FrmBoxScanRecord_Query
     {
@@ -40,9 +40,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.gridControl1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridView1)).BeginInit();
             this.SuspendLayout();
-            // 
+            //
             // gridControl1
-            // 
+            //
             this.gridControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gridControl1.Location = new System.Drawing.Point(0, 31);
             this.gridControl1.MainView = this.gridView1;
@@ -52,9 +52,9 @@
             this.gridControl1.TabIndex = 4;
             this.gridControl1.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gridView1});
-            // 
+            //
             // gridView1
-            // 
+            //
             this.gridView1.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
             this.gridColumn1,
             this.gridColumn2,
@@ -65,9 +65,9 @@
             this.gridColumn7});
             this.gridView1.GridControl = this.gridControl1;
             this.gridView1.Name = "gridView1";
-            // 
+            //
             // gridColumn1
-            // 
+            //
             this.gridColumn1.Caption = "ID";
             this.gridColumn1.FieldName = "Id";
             this.gridColumn1.MinWidth = 30;
@@ -75,9 +75,9 @@
             this.gridColumn1.Visible = true;
             this.gridColumn1.VisibleIndex = 0;
             this.gridColumn1.Width = 87;
-            // 
+            //
             // gridColumn2
-            // 
+            //
             this.gridColumn2.Caption = "箱号";
             this.gridColumn2.FieldName = "BoxNo";
             this.gridColumn2.MinWidth = 30;
@@ -85,9 +85,9 @@
             this.gridColumn2.Visible = true;
             this.gridColumn2.VisibleIndex = 1;
             this.gridColumn2.Width = 164;
-            // 
+            //
             // gridColumn3
-            // 
+            //
             this.gridColumn3.Caption = "扫描器";
             this.gridColumn3.FieldName = "ScannerName";
             this.gridColumn3.MinWidth = 30;
@@ -95,9 +95,9 @@
             this.gridColumn3.Visible = true;
             this.gridColumn3.VisibleIndex = 2;
             this.gridColumn3.Width = 164;
-            // 
+            //
             // gridColumn4
-            // 
+            //
             this.gridColumn4.Caption = "扫描时间";
             this.gridColumn4.FieldName = "ScanTime";
             this.gridColumn4.MinWidth = 30;
@@ -105,9 +105,9 @@
             this.gridColumn4.Visible = true;
             this.gridColumn4.VisibleIndex = 3;
             this.gridColumn4.Width = 164;
-            // 
+            //
             // gridColumn5
-            // 
+            //
             this.gridColumn5.Caption = "扫描结果";
             this.gridColumn5.FieldName = "ScanResult";
             this.gridColumn5.MinWidth = 30;
@@ -115,9 +115,9 @@
             this.gridColumn5.Visible = true;
             this.gridColumn5.VisibleIndex = 4;
             this.gridColumn5.Width = 131;
-            // 
+            //
             // gridColumn6
-            // 
+            //
             this.gridColumn6.Caption = "站点";
             this.gridColumn6.FieldName = "StationName";
             this.gridColumn6.MinWidth = 30;
@@ -125,9 +125,9 @@
             this.gridColumn6.Visible = true;
             this.gridColumn6.VisibleIndex = 5;
             this.gridColumn6.Width = 110;
-            // 
+            //
             // gridColumn7
-            // 
+            //
             this.gridColumn7.Caption = "备注";
             this.gridColumn7.FieldName = "Remark";
             this.gridColumn7.MinWidth = 30;
@@ -135,9 +135,9 @@
             this.gridColumn7.Visible = true;
             this.gridColumn7.VisibleIndex = 6;
             this.gridColumn7.Width = 92;
-            // 
+            //
             // FrmBoxScanRecord_Query
-            // 
+            //
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(948, 450);

@@ -30,6 +30,7 @@
         {
             this.gridControl1 = new DevExpress.XtraGrid.GridControl();
             this.gridView1 = new DevExpress.XtraGrid.Views.Grid.GridView();
+            this.gridColumnRowNo = new DevExpress.XtraGrid.Columns.GridColumn();
             this.gridColumn1 = new DevExpress.XtraGrid.Columns.GridColumn();
             this.gridColumn2 = new DevExpress.XtraGrid.Columns.GridColumn();
             this.gridColumn3 = new DevExpress.XtraGrid.Columns.GridColumn();
@@ -52,10 +53,11 @@
             this.gridControl1.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gridView1});
             this.gridControl1.Load += new System.EventHandler(this.FrmPLC_IP_Config_Load);
-            // 
+            //
             // gridView1
-            // 
+            //
             this.gridView1.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
+            this.gridColumnRowNo,
             this.gridColumn1,
             this.gridColumn2,
             this.gridColumn3,
@@ -64,15 +66,29 @@
             this.gridColumn6});
             this.gridView1.GridControl = this.gridControl1;
             this.gridView1.Name = "gridView1";
-            // 
+            this.gridView1.CustomUnboundColumnData += new DevExpress.XtraGrid.Views.Base.CustomColumnDataEventHandler(this.gridView1_CustomUnboundColumnData);
+            //
+            // gridColumnRowNo
+            //
+            this.gridColumnRowNo.Caption = "行号";
+            this.gridColumnRowNo.FieldName = "RowNo";
+            this.gridColumnRowNo.MinWidth = 30;
+            this.gridColumnRowNo.Name = "gridColumnRowNo";
+            this.gridColumnRowNo.OptionsColumn.AllowEdit = false;
+            this.gridColumnRowNo.OptionsColumn.ReadOnly = true;
+            this.gridColumnRowNo.UnboundDataType = typeof(string);
+            this.gridColumnRowNo.Visible = true;
+            this.gridColumnRowNo.VisibleIndex = 0;
+            this.gridColumnRowNo.Width = 30;
+            //
             // gridColumn1
-            // 
+            //
             this.gridColumn1.Caption = "PLC 编号";
             this.gridColumn1.FieldName = "PlcNo";
             this.gridColumn1.MinWidth = 30;
             this.gridColumn1.Name = "gridColumn1";
             this.gridColumn1.Visible = true;
-            this.gridColumn1.VisibleIndex = 0;
+            this.gridColumn1.VisibleIndex = 1;
             this.gridColumn1.Width = 106;
             // 
             // gridColumn2
@@ -82,7 +98,7 @@
             this.gridColumn2.MinWidth = 30;
             this.gridColumn2.Name = "gridColumn2";
             this.gridColumn2.Visible = true;
-            this.gridColumn2.VisibleIndex = 1;
+            this.gridColumn2.VisibleIndex = 2;
             this.gridColumn2.Width = 225;
             // 
             // gridColumn3
@@ -92,7 +108,7 @@
             this.gridColumn3.MinWidth = 30;
             this.gridColumn3.Name = "gridColumn3";
             this.gridColumn3.Visible = true;
-            this.gridColumn3.VisibleIndex = 2;
+            this.gridColumn3.VisibleIndex = 3;
             this.gridColumn3.Width = 79;
             // 
             // gridColumn4
@@ -102,7 +118,7 @@
             this.gridColumn4.MinWidth = 30;
             this.gridColumn4.Name = "gridColumn4";
             this.gridColumn4.Visible = true;
-            this.gridColumn4.VisibleIndex = 3;
+            this.gridColumn4.VisibleIndex = 4;
             this.gridColumn4.Width = 115;
             // 
             // gridColumn5
@@ -112,7 +128,7 @@
             this.gridColumn5.MinWidth = 30;
             this.gridColumn5.Name = "gridColumn5";
             this.gridColumn5.Visible = true;
-            this.gridColumn5.VisibleIndex = 4;
+            this.gridColumn5.VisibleIndex = 5;
             this.gridColumn5.Width = 180;
             // 
             // gridColumn6
@@ -122,7 +138,7 @@
             this.gridColumn6.MinWidth = 30;
             this.gridColumn6.Name = "gridColumn6";
             this.gridColumn6.Visible = true;
-            this.gridColumn6.VisibleIndex = 5;
+            this.gridColumn6.VisibleIndex = 6;
             this.gridColumn6.Width = 59;
             // 
             // FrmPLC_IP_Config
@@ -145,6 +161,7 @@
 
         private DevExpress.XtraGrid.GridControl gridControl1;
         private DevExpress.XtraGrid.Views.Grid.GridView gridView1;
+        private DevExpress.XtraGrid.Columns.GridColumn gridColumnRowNo;
         private DevExpress.XtraGrid.Columns.GridColumn gridColumn1;
         private DevExpress.XtraGrid.Columns.GridColumn gridColumn2;
         private DevExpress.XtraGrid.Columns.GridColumn gridColumn3;

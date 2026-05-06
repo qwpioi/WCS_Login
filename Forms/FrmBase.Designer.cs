@@ -41,6 +41,8 @@
             this.barDockControlBottom = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlLeft = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlRight = new DevExpress.XtraBars.BarDockControl();
+            this.btnAdd = new DevExpress.XtraBars.BarButtonItem();
+            this.btnImport = new DevExpress.XtraBars.BarButtonItem();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -59,9 +61,11 @@
             this.btnSave,
             this.btnDelete,
             this.btnRefresh,
-            this.btnQuery});
+            this.btnQuery,
+            this.btnAdd,
+            this.btnImport});
             this.barManager1.MainMenu = this.bar2;
-            this.barManager1.MaxItemId = 5;
+            this.barManager1.MaxItemId = 7;
             this.barManager1.StatusBar = this.bar3;
             // 
             // bar2
@@ -71,11 +75,13 @@
             this.bar2.DockRow = 0;
             this.bar2.DockStyle = DevExpress.XtraBars.BarDockStyle.Top;
             this.bar2.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
-            new DevExpress.XtraBars.LinkPersistInfo(this.btnExport),
+            new DevExpress.XtraBars.LinkPersistInfo(this.btnAdd),
+            new DevExpress.XtraBars.LinkPersistInfo(this.btnQuery),
             new DevExpress.XtraBars.LinkPersistInfo(this.btnSave),
             new DevExpress.XtraBars.LinkPersistInfo(this.btnDelete),
-            new DevExpress.XtraBars.LinkPersistInfo(this.btnRefresh),
-            new DevExpress.XtraBars.LinkPersistInfo(this.btnQuery)});
+            new DevExpress.XtraBars.LinkPersistInfo(this.btnImport),
+            new DevExpress.XtraBars.LinkPersistInfo(this.btnExport),
+            new DevExpress.XtraBars.LinkPersistInfo(this.btnRefresh)});
             this.bar2.OptionsBar.MultiLine = true;
             this.bar2.OptionsBar.UseWholeRow = true;
             this.bar2.Text = "Main menu";
@@ -160,6 +166,20 @@
             this.barDockControlRight.Manager = this.barManager1;
             this.barDockControlRight.Size = new System.Drawing.Size(0, 399);
             // 
+            // btnAdd
+            // 
+            this.btnAdd.Caption = "新增 (&A)";
+            this.btnAdd.Hint = "新增记录";
+            this.btnAdd.Id = 5;
+            this.btnAdd.Name = "btnAdd";
+            // 
+            // btnImport
+            // 
+            this.btnImport.Caption = "导入 (&I)";
+            this.btnImport.Hint = "从Excel导入数据";
+            this.btnImport.Id = 6;
+            this.btnImport.Name = "btnImport";
+            // 
             // FrmBase
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
@@ -191,6 +211,7 @@
         protected DevExpress.XtraBars.BarDockControl barDockControlBottom;
         protected DevExpress.XtraBars.BarDockControl barDockControlLeft;
         protected DevExpress.XtraBars.BarDockControl barDockControlRight;
-        
+        private DevExpress.XtraBars.BarButtonItem btnAdd;
+        private DevExpress.XtraBars.BarButtonItem btnImport;
     }
 }

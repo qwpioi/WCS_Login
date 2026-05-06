@@ -66,12 +66,6 @@ namespace WCS_Login
                 // 保存当前用户（供其他窗体使用）
                 Program.CurrentUserName = user;
 
-                XtraMessageBox.Show(
-                    $"登录成功！\n\n用户：{user}\n角色：{role}\n系统模式：{mode}\n\n欢迎进入 WCS 系统",
-                    "成功",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
-
                 // ✅ 打开主窗体
                 FrmMain mainForm = new FrmMain();
                 this.Hide();

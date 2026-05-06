@@ -1,4 +1,7 @@
-﻿using DevExpress.XtraBars;
+﻿using DevExpress.LookAndFeel;
+using DevExpress.Skins;
+using DevExpress.UserSkins;
+using DevExpress.XtraBars;
 using DevExpress.XtraEditors;
 using DevExpress.XtraTreeList;
 using DevExpress.XtraTreeList.Nodes;
@@ -18,6 +21,8 @@ namespace WCS_Login
             InitMainForm();
             // 启动 WCS 系统
             this.Shown += FrmMain_Shown;
+            // 🔽 绑定皮肤按钮
+            btnSkin.ItemClick += BtnSkin_ItemClick;
         }
 
         /// <summary>
@@ -60,6 +65,39 @@ namespace WCS_Login
         }
 
         #region Ribbon 按钮事件
+
+        /// <summary>
+        /// 皮肤选择按钮
+        /// </summary>
+        private void BtnSkin_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            // 创建独立的 PopupMenu（不依赖 barManager1）
+            PopupMenu skinMenu = new PopupMenu();
+            skinMenu.Ribbon = ribbonControl1;
+
+            string[] skins = {
+        "Office 2019 Colorful",
+        "Office 2019 Black",
+        "Office 2019 White",
+        "VS2010",
+        "Dark Room",
+        "The Bezier"
+    };
+
+            foreach (string skin in skins)
+            {
+                var item = new BarButtonItem();
+                item.Caption = skin;
+                item.Name = "skin_" + skin.Replace(" ", "_");
+                item.ItemClick += (s, args) =>
+                {
+                    UserLookAndFeel.Default.SetSkinStyle(skin);
+                };
+                skinMenu.AddItem(item);
+            }
+
+            skinMenu.ShowPopup(Control.MousePosition);
+        }
 
         private void btnExit_ItemClick(object sender, ItemClickEventArgs e)
         {

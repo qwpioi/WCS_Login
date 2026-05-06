@@ -47,6 +47,7 @@
             this.treeList1 = new DevExpress.XtraTreeList.TreeList();
             this.colName = new DevExpress.XtraTreeList.Columns.TreeListColumn();
             this.xtraTabbedMdiManager1 = new DevExpress.XtraTabbedMdi.XtraTabbedMdiManager(this.components);
+            this.btnSkin = new DevExpress.XtraBars.BarButtonItem();
             ((System.ComponentModel.ISupportInitialize)(this.ribbonControl1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dockManager1)).BeginInit();
             this.dockPanel1.SuspendLayout();
@@ -66,9 +67,10 @@
             this.barLinkCount,
             this.btnExit,
             this.btnAbout,
-            this.barStaticItem1});
+            this.barStaticItem1,
+            this.btnSkin});
             this.ribbonControl1.Location = new System.Drawing.Point(0, 0);
-            this.ribbonControl1.MaxItemId = 7;
+            this.ribbonControl1.MaxItemId = 8;
             this.ribbonControl1.Name = "ribbonControl1";
             this.ribbonControl1.Pages.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPage[] {
             this.ribbonPage_System,
@@ -125,6 +127,7 @@
             // 
             // ribbonPageGroup_Operation
             // 
+            this.ribbonPageGroup_Operation.ItemLinks.Add(this.btnSkin);
             this.ribbonPageGroup_Operation.ItemLinks.Add(this.btnExit);
             this.ribbonPageGroup_Operation.Name = "ribbonPageGroup_Operation";
             this.ribbonPageGroup_Operation.Text = "操作";
@@ -254,6 +257,12 @@
             // 
             this.xtraTabbedMdiManager1.MdiParent = this;
             // 
+            // btnSkin
+            // 
+            this.btnSkin.Caption = "皮肤";
+            this.btnSkin.Id = 7;
+            this.btnSkin.Name = "btnSkin";
+            // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
@@ -296,5 +305,6 @@
         private DevExpress.XtraTreeList.Columns.TreeListColumn colName;
         private DevExpress.XtraTabbedMdi.XtraTabbedMdiManager xtraTabbedMdiManager1;
         private DevExpress.XtraBars.BarStaticItem barStaticItem1;
+        private DevExpress.XtraBars.BarButtonItem btnSkin;
     }
 }

@@ -34,6 +34,15 @@ namespace WCS_Login
             try
             {
                 LoadData();
+                // ✅ 添加：设置时间列显示格式（精确到时分秒）
+                var scanTimeColumn = gridView1.Columns["ScanTime"];
+                if (scanTimeColumn != null)
+                {
+                    scanTimeColumn.DisplayFormat.FormatType = DevExpress.Utils.FormatType.DateTime;
+                    scanTimeColumn.DisplayFormat.FormatString = "yyyy-MM-dd HH:mm:ss";
+                }
+
+
                 if (gridControl1.DataSource is DataTable dt)
                 {
                     _lastRecordCount = dt.Rows.Count;

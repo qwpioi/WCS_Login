@@ -41,6 +41,14 @@ namespace WCS_Login
             try
             {
                 LoadData();
+
+                // ✅ 添加：设置创建时间列显示格式（精确到时分秒）
+                var createTimeColumn = gridView1.Columns["CreateTime"];
+                if (createTimeColumn != null)
+                {
+                    createTimeColumn.DisplayFormat.FormatType = DevExpress.Utils.FormatType.DateTime;
+                    createTimeColumn.DisplayFormat.FormatString = "yyyy-MM-dd HH:mm:ss";
+                }
             }
             catch (Exception ex)
             {

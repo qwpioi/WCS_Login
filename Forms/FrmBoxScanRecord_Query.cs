@@ -18,6 +18,12 @@ namespace WCS_Login
         private System.Windows.Forms.Timer _autoRefreshTimer;
         private int _lastRecordCount = 0;
 
+        // 分页变量
+        private int _currentPage = 1;
+        private const int PageSize = 23;
+        private int _totalRecords = 0;
+        private int _totalPages = 0;
+
         public FrmBoxScanRecord_Query()
         {
             InitializeComponent();
@@ -67,12 +73,83 @@ namespace WCS_Login
         }
 
         /// <summary>
-        /// 加载数据
+        /// 加载数据（分页查询）
         /// </summary>
         private void LoadData()
         {
-            string sql = "SELECT Id, BoxNo, ScannerName, ScanTime, ScanResult, StationName, Remark FROM T_BoxScanRecord";
-            gridControl1.DataSource = DbHelper.ExecuteQuery(sql);
+            try
+            {
+                // 查询总记录数
+                string countSql = "SELECT COUNT(*) FROM T_BoxScanRecord";
+                DataTable dtCount = DbHelper.ExecuteQuery(countSql);
+                _totalRecords = dtCount.Rows.Count > 0 ? Convert.ToInt32(dtCount.Rows[0][0]) : 0;
+                _totalPages = (_totalRecords + PageSize - 1) / PageSize;
+
+                if (_currentPage > _totalPages) _currentPage = Math.Max(1, _totalPages);
+
+                // ROW_NUMBER() 分页查询，按扫描时间倒序
+                string sql = @"
+                    SELECT Id, BoxNo, ScannerName, ScanTime, ScanResult, StationName, Remark
+                    FROM (
+                        SELECT Id, BoxNo, ScannerName, ScanTime, ScanResult, StationName, Remark,
+                               ROW_NUMBER() OVER (ORDER BY ScanTime DESC) AS RowNum
+                        FROM T_BoxScanRecord
+                    ) AS t
+                    WHERE RowNum BETWEEN @StartRow AND @EndRow
+                    ORDER BY ScanTime DESC";
+
+                SqlParameter[] parameters = {
+                    new SqlParameter("@StartRow", SqlDbType.Int) { Value = (_currentPage - 1) * PageSize + 1 },
+                    new SqlParameter("@EndRow", SqlDbType.Int) { Value = _currentPage * PageSize }
+                };
+
+                gridControl1.DataSource = DbHelper.ExecuteQuery(sql, parameters);
+
+                UpdatePageInfo();
+
+                if (gridControl1.DataSource is DataTable dt)
+                {
+                    _lastRecordCount = dt.Rows.Count;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Error($"加载分页数据失败：{ex.Message}");
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// 更新分页信息显示到标题栏
+        /// </summary>
+        private void UpdatePageInfo()
+        {
+            this.Text = $"周转箱扫描记录查询 — 第 {_currentPage}/{_totalPages} 页，共 {_totalRecords} 条记录";
+            txtPageNo.EditValue = _currentPage.ToString();
+        }
+
+        /// <summary>
+        /// 上一页
+        /// </summary>
+        private void PrevPage()
+        {
+            if (_currentPage > 1)
+            {
+                _currentPage--;
+                LoadData();
+            }
+        }
+
+        /// <summary>
+        /// 下一页
+        /// </summary>
+        private void NextPage()
+        {
+            if (_currentPage < _totalPages)
+            {
+                _currentPage++;
+                LoadData();
+            }
         }
 
         /// <summary>
@@ -274,6 +351,7 @@ namespace WCS_Login
         {
             try
             {
+                _currentPage = 1;
                 LoadData();
 
                 Logger.Info($"用户 {Program.CurrentUserName} 刷新周转箱扫描记录数据");
@@ -298,6 +376,41 @@ namespace WCS_Login
                 _autoRefreshTimer.Dispose();
             }
             base.OnFormClosing(e);
+        }
+
+        /// <summary>
+        /// 上一页按钮点击
+        /// </summary>
+        private void btnPrevPage_Click(object sender, EventArgs e)
+        {
+            if (_currentPage > 1)
+            {
+                _currentPage--;
+                LoadData();
+                UpdatePageInfo();
+            }
+            else
+            {
+                XtraMessageBox.Show("已经是第一页了！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+
+        /// <summary>
+        /// 下一页按钮点击
+        /// </summary>
+        private void btnNextPage_Click(object sender, EventArgs e)
+        {
+            if (_currentPage < _totalPages)
+            {
+                _currentPage++;
+                LoadData();
+                UpdatePageInfo();
+            }
+            else
+            {
+                XtraMessageBox.Show("已经是最后一页了！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
         }
     }
 }

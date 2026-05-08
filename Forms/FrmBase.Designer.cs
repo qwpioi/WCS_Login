@@ -31,18 +31,18 @@
             this.components = new System.ComponentModel.Container();
             this.barManager1 = new DevExpress.XtraBars.BarManager(this.components);
             this.bar2 = new DevExpress.XtraBars.Bar();
-            this.btnExport = new DevExpress.XtraBars.BarButtonItem();
+            this.btnAdd = new DevExpress.XtraBars.BarButtonItem();
+            this.btnQuery = new DevExpress.XtraBars.BarButtonItem();
             this.btnSave = new DevExpress.XtraBars.BarButtonItem();
             this.btnDelete = new DevExpress.XtraBars.BarButtonItem();
+            this.btnImport = new DevExpress.XtraBars.BarButtonItem();
+            this.btnExport = new DevExpress.XtraBars.BarButtonItem();
             this.btnRefresh = new DevExpress.XtraBars.BarButtonItem();
-            this.btnQuery = new DevExpress.XtraBars.BarButtonItem();
             this.bar3 = new DevExpress.XtraBars.Bar();
             this.barDockControlTop = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlBottom = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlLeft = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlRight = new DevExpress.XtraBars.BarDockControl();
-            this.btnAdd = new DevExpress.XtraBars.BarButtonItem();
-            this.btnImport = new DevExpress.XtraBars.BarButtonItem();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -86,12 +86,19 @@
             this.bar2.OptionsBar.UseWholeRow = true;
             this.bar2.Text = "Main menu";
             // 
-            // btnExport
+            // btnAdd
             // 
-            this.btnExport.Caption = "导出 (&E)";
-            this.btnExport.Hint = "导出数据";
-            this.btnExport.Id = 0;
-            this.btnExport.Name = "btnExport";
+            this.btnAdd.Caption = "新增 (&A)";
+            this.btnAdd.Hint = "新增记录";
+            this.btnAdd.Id = 5;
+            this.btnAdd.Name = "btnAdd";
+            // 
+            // btnQuery
+            // 
+            this.btnQuery.Caption = "查询 (&Q)";
+            this.btnQuery.Hint = "查询数据";
+            this.btnQuery.Id = 4;
+            this.btnQuery.Name = "btnQuery";
             // 
             // btnSave
             // 
@@ -108,19 +115,26 @@
             this.btnDelete.Id = 2;
             this.btnDelete.Name = "btnDelete";
             // 
+            // btnImport
+            // 
+            this.btnImport.Caption = "导入 (&I)";
+            this.btnImport.Hint = "从Excel导入数据";
+            this.btnImport.Id = 6;
+            this.btnImport.Name = "btnImport";
+            // 
+            // btnExport
+            // 
+            this.btnExport.Caption = "导出 (&E)";
+            this.btnExport.Hint = "导出数据";
+            this.btnExport.Id = 0;
+            this.btnExport.Name = "btnExport";
+            // 
             // btnRefresh
             // 
             this.btnRefresh.Caption = "刷新 (&R)";
             this.btnRefresh.Hint = "刷新数据";
             this.btnRefresh.Id = 3;
             this.btnRefresh.Name = "btnRefresh";
-            // 
-            // btnQuery
-            // 
-            this.btnQuery.Caption = "查询 (&Q)";
-            this.btnQuery.Hint = "查询数据";
-            this.btnQuery.Id = 4;
-            this.btnQuery.Name = "btnQuery";
             // 
             // bar3
             // 
@@ -165,20 +179,6 @@
             this.barDockControlRight.Location = new System.Drawing.Point(800, 31);
             this.barDockControlRight.Manager = this.barManager1;
             this.barDockControlRight.Size = new System.Drawing.Size(0, 399);
-            // 
-            // btnAdd
-            // 
-            this.btnAdd.Caption = "新增 (&A)";
-            this.btnAdd.Hint = "新增记录";
-            this.btnAdd.Id = 5;
-            this.btnAdd.Name = "btnAdd";
-            // 
-            // btnImport
-            // 
-            this.btnImport.Caption = "导入 (&I)";
-            this.btnImport.Hint = "从Excel导入数据";
-            this.btnImport.Id = 6;
-            this.btnImport.Name = "btnImport";
             // 
             // FrmBase
             // 

@@ -10,7 +10,8 @@
       "Bash(msbuild WCS_Login.csproj /t:Build /p:Configuration=Debug /v:q)",
       "Bash(msbuild WCS_Login.csproj -t:Build -p:Configuration=Debug)",
       "Bash(dotnet build *)",
-      "Bash(msbuild WCS_Login.sln /t:Build /p:Configuration=Debug /v:quiet)"
+      "Bash(msbuild WCS_Login.sln /t:Build /p:Configuration=Debug /v:quiet)",
+      "Bash(git status *)"
     ]
   }
 }

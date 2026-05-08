@@ -36,6 +36,7 @@
             this.btnExit = new DevExpress.XtraBars.BarButtonItem();
             this.btnAbout = new DevExpress.XtraBars.BarButtonItem();
             this.barStaticItem1 = new DevExpress.XtraBars.BarStaticItem();
+            this.btnSkin = new DevExpress.XtraBars.BarButtonItem();
             this.ribbonPage_System = new DevExpress.XtraBars.Ribbon.RibbonPage();
             this.ribbonPageGroup_Operation = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
             this.ribbonPage_Help = new DevExpress.XtraBars.Ribbon.RibbonPage();
@@ -47,7 +48,6 @@
             this.treeList1 = new DevExpress.XtraTreeList.TreeList();
             this.colName = new DevExpress.XtraTreeList.Columns.TreeListColumn();
             this.xtraTabbedMdiManager1 = new DevExpress.XtraTabbedMdi.XtraTabbedMdiManager(this.components);
-            this.btnSkin = new DevExpress.XtraBars.BarButtonItem();
             ((System.ComponentModel.ISupportInitialize)(this.ribbonControl1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dockManager1)).BeginInit();
             this.dockPanel1.SuspendLayout();
@@ -117,6 +117,12 @@
             this.barStaticItem1.Id = 6;
             this.barStaticItem1.Name = "barStaticItem1";
             this.barStaticItem1.PaintStyle = DevExpress.XtraBars.BarItemPaintStyle.Caption;
+            // 
+            // btnSkin
+            // 
+            this.btnSkin.Caption = "皮肤";
+            this.btnSkin.Id = 7;
+            this.btnSkin.Name = "btnSkin";
             // 
             // ribbonPage_System
             // 
@@ -256,12 +262,6 @@
             // xtraTabbedMdiManager1
             // 
             this.xtraTabbedMdiManager1.MdiParent = this;
-            // 
-            // btnSkin
-            // 
-            this.btnSkin.Caption = "皮肤";
-            this.btnSkin.Id = 7;
-            this.btnSkin.Name = "btnSkin";
             // 
             // FrmMain
             // 

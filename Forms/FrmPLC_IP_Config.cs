@@ -1,4 +1,5 @@
 ﻿using DevExpress.XtraEditors;
+using DevExpress.XtraEditors.Repository;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -16,11 +17,13 @@ namespace WCS_Login
     public partial class FrmPLC_IP_Config : FrmBase
     {
         private DataTable _dataTable;
+        private DevExpress.XtraEditors.Repository.RepositoryItemLookUpEdit repositoryPlcType;
 
         public FrmPLC_IP_Config()
         {
             InitializeComponent();
             this.Text = "PLC_IP 配置";
+            InitPlcTypeComboBox();
         }
 
         /// <summary>
@@ -37,6 +40,37 @@ namespace WCS_Login
                 XtraMessageBox.Show($"数据库连接失败：{ex.Message}", "错误",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        /// <summary>
+        /// 初始化 PLC 型号下拉框
+        /// </summary>
+        private void InitPlcTypeComboBox()
+        {
+            repositoryPlcType = new RepositoryItemLookUpEdit();
+            repositoryPlcType.DataSource = GetPlcTypeList();
+            repositoryPlcType.DisplayMember = "Text";
+            repositoryPlcType.ValueMember = "Value";
+            repositoryPlcType.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
+            var col = new DevExpress.XtraEditors.Controls.LookUpColumnInfo("Text", 120, "PLC 型号");
+            col.Caption = "PLC 型号";
+            repositoryPlcType.Columns.Add(col);
+            repositoryPlcType.NullText = "";
+            gridView1.Columns["PlcType"].ColumnEdit = repositoryPlcType;
+        }
+
+        /// <summary>
+        /// 获取 PLC 型号列表
+        /// </summary>
+        private List<PlcTypeItem> GetPlcTypeList()
+        {
+            return new List<PlcTypeItem>
+            {
+                new PlcTypeItem { Text = "S7-1200", Value = "S7-1200" },
+                new PlcTypeItem { Text = "S7-1500", Value = "S7-1500" },
+                new PlcTypeItem { Text = "S7-300", Value = "S7-300" },
+                new PlcTypeItem { Text = "S7-200", Value = "S7-200" }
+            };
         }
 
         /// <summary>
@@ -385,5 +419,14 @@ namespace WCS_Login
             }
         }
 
+    }
+
+    /// <summary>
+    /// PLC 型号数据项
+    /// </summary>
+    public class PlcTypeItem
+    {
+        public string Text { get; set; }
+        public string Value { get; set; }
     }
 }

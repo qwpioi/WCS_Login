@@ -27,49 +27,55 @@ namespace WCS_Login
             btnImport.ItemClick += BtnImport_ItemClick;
         }
 
-        /// <summary>
-        /// 查询按钮点击事件（虚方法，子类可重写）
-        /// </summary>
         protected virtual void BtnQuery_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             XtraMessageBox.Show("请在子类中实现查询逻辑", "提示");
         }
 
-        /// <summary>
-        /// 导出按钮点击事件（虚方法，子类可重写）
-        /// </summary>
         protected virtual void BtnExport_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             XtraMessageBox.Show("请在子类中实现导出逻辑", "提示");
         }
 
-        /// <summary>
-        /// 保存按钮点击事件（虚方法，子类可重写）
-        /// </summary>
         protected virtual void BtnSave_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
-            XtraMessageBox.Show("请在子类中实现保存逻辑", "提示");
+            try
+            {
+                int rows = OnSave();
+                UpdateRowsAffected(rows, rows > 0);
+                if (rows > 0)
+                {
+                    LoadData();
+                }
+            }
+            catch (Exception ex)
+            {
+                UpdateRowsAffected(0, false);
+                XtraMessageBox.Show($"保存出错：{ex.Message}", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
-        /// <summary>
-        /// 删除按钮点击事件（虚方法，子类可重写）
-        /// </summary>
         protected virtual void BtnDelete_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
-            XtraMessageBox.Show("请在子类中实现删除逻辑", "提示");
+            try
+            {
+                int rows = OnDelete();
+                UpdateRowsAffected(rows, rows > 0);
+                if (rows > 0)
+                {
+                    LoadData();
+                }
+            }
+            catch (Exception ex)
+            {
+                UpdateRowsAffected(0, false);
+                XtraMessageBox.Show($"删除出错：{ex.Message}", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
-        /// <summary>
-        /// 刷新按钮点击事件（虚方法，子类可重写）
-        /// </summary>
         protected virtual void BtnRefresh_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             XtraMessageBox.Show("请在子类中实现刷新逻辑", "提示");
-        }
-
-        private void btnSave_ItemClick_1(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
-        {
-
         }
 
         protected virtual void BtnAdd_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
@@ -80,6 +86,35 @@ namespace WCS_Login
         protected virtual void BtnImport_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             XtraMessageBox.Show("请在子类中实现导入逻辑", "提示");
+        }
+
+        protected virtual int OnSave()
+        {
+            return 0;
+        }
+
+        protected virtual int OnDelete()
+        {
+            return 0;
+        }
+
+        protected virtual void LoadData()
+        {
+        }
+
+        protected void UpdateRowsAffected(int rows, bool isSuccess = true)
+        {
+            if (this.MdiParent is FrmMain mainForm && mainForm.barStaticItemResult != null)
+            {
+                if (isSuccess)
+                {
+                    mainForm.barStaticItemResult.Caption = "✅ 影响行数：" + rows;
+                }
+                else
+                {
+                    mainForm.barStaticItemResult.Caption = "❌ 影响行数：0";
+                }
+            }
         }
     }
 }

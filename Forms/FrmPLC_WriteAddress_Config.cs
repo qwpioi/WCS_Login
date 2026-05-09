@@ -32,6 +32,7 @@ namespace WCS_Login
             string sql = "SELECT Id, VariableName, Address, DataType, PlcNo, Description, Remark FROM T_PLC_WriteAddress_Config";
             _dataTable = DbHelper.ExecuteQuery(sql);
             gridControl1.DataSource = _dataTable;
+            if (_dataTable != null) { _dataTable.AcceptChanges(); }
         }
 
         /// <summary>
@@ -138,64 +139,73 @@ namespace WCS_Login
                     string description = row["Description"]?.ToString()?.Trim();
                     string remark = row["Remark"]?.ToString()?.Trim();
 
-                    if (row.RowState == DataRowState.Added)
-                    {
-                        string insertSql = @"INSERT INTO T_PLC_WriteAddress_Config (VariableName, Address, DataType, PlcNo, Description, Remark)
-                                             VALUES (@VariableName, @Address, @DataType, @PlcNo, @Description, @Remark)";
-
-                        SqlParameter[] parameters = {
-                            new SqlParameter("@VariableName", variableName),
-                            new SqlParameter("@Address", address),
-                            new SqlParameter("@DataType", string.IsNullOrEmpty(dataType) ? (object)DBNull.Value : dataType),
-                            new SqlParameter("@PlcNo", string.IsNullOrEmpty(plcNo) ? (object)DBNull.Value : plcNo),
-                            new SqlParameter("@Description", string.IsNullOrEmpty(description) ? (object)DBNull.Value : description),
-                            new SqlParameter("@Remark", string.IsNullOrEmpty(remark) ? (object)DBNull.Value : remark)
-                        };
-
-                        DbHelper.ExecuteNonQuery(insertSql, parameters);
-                        insertCount++;
-                    }
-                    else
-                    {
-                        string id = row["Id"]?.ToString()?.Trim();
-                        string updateSql = @"UPDATE T_PLC_WriteAddress_Config
-                                             SET VariableName = @VariableName, Address = @Address, DataType = @DataType,
-                                                 PlcNo = @PlcNo, Description = @Description, Remark = @Remark
-                                             WHERE Id = @Id";
-
-                        SqlParameter[] parameters = {
-                            new SqlParameter("@VariableName", variableName),
-                            new SqlParameter("@Address", address),
-                            new SqlParameter("@DataType", string.IsNullOrEmpty(dataType) ? (object)DBNull.Value : dataType),
-                            new SqlParameter("@PlcNo", string.IsNullOrEmpty(plcNo) ? (object)DBNull.Value : plcNo),
-                            new SqlParameter("@Description", string.IsNullOrEmpty(description) ? (object)DBNull.Value : description),
-                            new SqlParameter("@Remark", string.IsNullOrEmpty(remark) ? (object)DBNull.Value : remark),
-                            new SqlParameter("@Id", id)
-                        };
-
-                        DbHelper.ExecuteNonQuery(updateSql, parameters);
-                        updateCount++;
-                    }
-                }
-
-                if (insertCount > 0 || updateCount > 0)
+                if (row.RowState == DataRowState.Added)
                 {
-                    string msg = $"保存成功！";
-                    if (insertCount > 0) msg += $"\n新增 {insertCount} 条";
-                    if (updateCount > 0) msg += $"\n修改 {updateCount} 条";
+                    string insertSql = @"INSERT INTO T_PLC_WriteAddress_Config (VariableName, Address, DataType, PlcNo, Description, Remark)
+                                         VALUES (@VariableName, @Address, @DataType, @PlcNo, @Description, @Remark)";
 
-                    DbHelper.LogToDatabase(Program.CurrentUserName, "保存数据", "PLC 写地址配置", $"新增 {insertCount} 条，修改 {updateCount} 条", "INFO");
-                    Logger.Info($"用户 {Program.CurrentUserName} 保存 PLC 写变量地址配置，新增 {insertCount} 条，修改 {updateCount} 条");
-                    XtraMessageBox.Show(msg, "提示");
-                    LoadData();
+                    SqlParameter[] parameters = {
+                        new SqlParameter("@VariableName", variableName),
+                        new SqlParameter("@Address", address),
+                        new SqlParameter("@DataType", string.IsNullOrEmpty(dataType) ? (object)DBNull.Value : dataType),
+                        new SqlParameter("@PlcNo", string.IsNullOrEmpty(plcNo) ? (object)DBNull.Value : plcNo),
+                        new SqlParameter("@Description", string.IsNullOrEmpty(description) ? (object)DBNull.Value : description),
+                        new SqlParameter("@Remark", string.IsNullOrEmpty(remark) ? (object)DBNull.Value : remark)
+                    };
+
+                    DbHelper.ExecuteNonQuery(insertSql, parameters);
+                    insertCount++;
+                }
+                else if (row.RowState == DataRowState.Modified)
+                {
+                    string id = row["Id"]?.ToString()?.Trim();
+                    string updateSql = @"UPDATE T_PLC_WriteAddress_Config
+                                         SET VariableName = @VariableName, Address = @Address, DataType = @DataType,
+                                             PlcNo = @PlcNo, Description = @Description, Remark = @Remark
+                                         WHERE Id = @Id";
+
+                    SqlParameter[] parameters = {
+                        new SqlParameter("@VariableName", variableName),
+                        new SqlParameter("@Address", address),
+                        new SqlParameter("@DataType", string.IsNullOrEmpty(dataType) ? (object)DBNull.Value : dataType),
+                        new SqlParameter("@PlcNo", string.IsNullOrEmpty(plcNo) ? (object)DBNull.Value : plcNo),
+                        new SqlParameter("@Description", string.IsNullOrEmpty(description) ? (object)DBNull.Value : description),
+                        new SqlParameter("@Remark", string.IsNullOrEmpty(remark) ? (object)DBNull.Value : remark),
+                        new SqlParameter("@Id", id)
+                    };
+
+                    int rows = DbHelper.ExecuteNonQuery(updateSql, parameters);
+                    updateCount += rows;
                 }
             }
-            catch (Exception ex)
+
+            if (insertCount > 0 || updateCount > 0)
             {
-                DbHelper.LogToDatabase(Program.CurrentUserName, "保存数据", "PLC 写地址配置", $"保存失败：{ex.Message}", "ERROR");
-                Logger.Error($"保存失败：{ex.Message}", Program.CurrentUserName);
-                XtraMessageBox.Show($"保存失败：{ex.Message}", "错误");
+                int totalRows = insertCount + updateCount;
+                UpdateRowsAffected(totalRows, true);
+                
+                string msg = $"保存成功！";
+                if (insertCount > 0) msg += $"\n新增 {insertCount} 条";
+                if (updateCount > 0) msg += $"\n修改 {updateCount} 条";
+
+                DbHelper.LogToDatabase(Program.CurrentUserName, "保存数据", "PLC 写地址配置", $"新增 {insertCount} 条，修改 {updateCount} 条", "INFO");
+                Logger.Info($"用户 {Program.CurrentUserName} 保存 PLC 写变量地址配置，新增 {insertCount} 条，修改 {updateCount} 条");
+                _dataTable.AcceptChanges();
+                XtraMessageBox.Show(msg, "提示");
+                LoadData();
             }
+            else
+            {
+                UpdateRowsAffected(0, false);
+            }
+        }
+        catch (Exception ex)
+        {
+            UpdateRowsAffected(0, false);
+            DbHelper.LogToDatabase(Program.CurrentUserName, "保存数据", "PLC 写地址配置", $"保存失败：{ex.Message}", "ERROR");
+            Logger.Error($"保存失败：{ex.Message}", Program.CurrentUserName);
+            XtraMessageBox.Show($"保存失败：{ex.Message}", "错误");
+        }
         }
 
         /// <summary>
@@ -227,37 +237,52 @@ namespace WCS_Login
         {
             try
             {
-                var row = gridView1.GetFocusedRow();
-                if (row == null)
+                int[] selectedRows = gridView1.GetSelectedRows();
+                if (selectedRows == null || selectedRows.Length == 0)
                 {
                     XtraMessageBox.Show("请选择要删除的记录！", "提示");
                     return;
                 }
 
-                if (XtraMessageBox.Show("确定要删除选中记录吗？", "确认",
+                if (XtraMessageBox.Show($"确定要删除选中的 {selectedRows.Length} 条记录吗？", "确认",
                     MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 {
                     return;
                 }
 
-                string id = gridView1.GetFocusedRowCellValue("Id").ToString();
-
-                string sql = "DELETE FROM T_PLC_WriteAddress_Config WHERE Id = @Id";
-                int rows = DbHelper.ExecuteNonQuery(sql, new SqlParameter[] {
-            new SqlParameter("@Id", id)
-        });
-
-                if (rows > 0)
+                int totalRowsAffected = 0;
+                foreach (int rowHandle in selectedRows)
                 {
+                    if (!gridView1.IsDataRow(rowHandle)) continue;
+
+                    string id = gridView1.GetRowCellValue(rowHandle, "Id").ToString();
+
+                    string sql = "DELETE FROM T_PLC_WriteAddress_Config WHERE Id = @Id";
+                    int rows = DbHelper.ExecuteNonQuery(sql, new SqlParameter[] {
+                        new SqlParameter("@Id", id)
+                    });
+
+                    totalRowsAffected += rows;
+
                     DbHelper.LogToDatabase(Program.CurrentUserName, "删除数据", "PLC 写地址配置", $"删除变量 {id}", "INFO");
                     Logger.Info($"用户 {Program.CurrentUserName} 删除 PLC 写变量地址配置，ID：{id}");
+                }
 
-                    XtraMessageBox.Show("删除成功！", "提示");
+                if (totalRowsAffected > 0)
+                {
+                    UpdateRowsAffected(totalRowsAffected, true);
+                    _dataTable.AcceptChanges();
+                    XtraMessageBox.Show($"成功删除 {totalRowsAffected} 条记录！", "提示");
                     LoadData();
+                }
+                else
+                {
+                    UpdateRowsAffected(0, false);
                 }
             }
             catch (Exception ex)
             {
+                UpdateRowsAffected(0, false);
                 DbHelper.LogToDatabase(Program.CurrentUserName, "删除数据", "PLC 写地址配置", $"删除失败：{ex.Message}", "ERROR");
                 Logger.Error($"删除失败：{ex.Message}", Program.CurrentUserName);
 
@@ -345,6 +370,7 @@ namespace WCS_Login
                     }
                 }
 
+                UpdateRowsAffected(successCount, successCount > 0);
                 DbHelper.LogToDatabase(Program.CurrentUserName, "导入数据", "PLC 写地址配置", $"从 {ofd.FileName} 导入，成功 {successCount} 条，失败 {failCount} 条", "INFO");
                 Logger.Info($"用户 {Program.CurrentUserName} 导入 PLC 写变量地址配置，成功 {successCount} 条，失败 {failCount} 条");
                 XtraMessageBox.Show($"导入完成！\n成功：{successCount} 条\n失败：{failCount} 条", "提示");
@@ -352,6 +378,7 @@ namespace WCS_Login
             }
             catch (Exception ex)
             {
+                UpdateRowsAffected(0, false);
                 DbHelper.LogToDatabase(Program.CurrentUserName, "导入数据", "PLC 写地址配置", $"导入失败：{ex.Message}", "ERROR");
                 Logger.Error($"导入失败：{ex.Message}", Program.CurrentUserName);
                 XtraMessageBox.Show($"导入失败：{ex.Message}", "错误");

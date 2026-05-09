@@ -32,10 +32,10 @@
             this.ribbonControl1 = new DevExpress.XtraBars.Ribbon.RibbonControl();
             this.barLinkUser = new DevExpress.XtraBars.BarLinkContainerItem();
             this.barLinkDate = new DevExpress.XtraBars.BarLinkContainerItem();
-            this.barLinkCount = new DevExpress.XtraBars.BarLinkContainerItem();
             this.btnExit = new DevExpress.XtraBars.BarButtonItem();
             this.btnAbout = new DevExpress.XtraBars.BarButtonItem();
             this.barStaticItem1 = new DevExpress.XtraBars.BarStaticItem();
+            this.barStaticItemResult = new DevExpress.XtraBars.BarStaticItem();
             this.btnSkin = new DevExpress.XtraBars.BarButtonItem();
             this.ribbonPage_System = new DevExpress.XtraBars.Ribbon.RibbonPage();
             this.ribbonPageGroup_Operation = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
@@ -64,13 +64,13 @@
             this.ribbonControl1.SearchEditItem,
             this.barLinkUser,
             this.barLinkDate,
-            this.barLinkCount,
             this.btnExit,
             this.btnAbout,
             this.barStaticItem1,
+            this.barStaticItemResult,
             this.btnSkin});
             this.ribbonControl1.Location = new System.Drawing.Point(0, 0);
-            this.ribbonControl1.MaxItemId = 8;
+            this.ribbonControl1.MaxItemId = 9;
             this.ribbonControl1.Name = "ribbonControl1";
             this.ribbonControl1.Pages.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPage[] {
             this.ribbonPage_System,
@@ -84,21 +84,15 @@
             this.barLinkUser.Caption = "当前用户：";
             this.barLinkUser.Id = 1;
             this.barLinkUser.Name = "barLinkUser";
-            // 
+            //
             // barLinkDate
-            // 
+            //
             this.barLinkDate.Caption = "当前日期：";
             this.barLinkDate.Id = 2;
             this.barLinkDate.Name = "barLinkDate";
-            // 
-            // barLinkCount
-            // 
-            this.barLinkCount.Caption = "总条目：";
-            this.barLinkCount.Id = 3;
-            this.barLinkCount.Name = "barLinkCount";
-            // 
+            //
             // btnExit
-            // 
+            //
             this.btnExit.Caption = "退出";
             this.btnExit.Id = 4;
             this.btnExit.Name = "btnExit";
@@ -110,16 +104,23 @@
             this.btnAbout.Id = 5;
             this.btnAbout.Name = "btnAbout";
             this.btnAbout.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.btnAbout_ItemClick);
-            // 
+            //
             // barStaticItem1
-            // 
+            //
             this.barStaticItem1.Caption = "WCS 系统：未启动";
             this.barStaticItem1.Id = 6;
             this.barStaticItem1.Name = "barStaticItem1";
             this.barStaticItem1.PaintStyle = DevExpress.XtraBars.BarItemPaintStyle.Caption;
-            // 
+            //
+            // barStaticItemResult
+            //
+            this.barStaticItemResult.Caption = "影响行数：0";
+            this.barStaticItemResult.Id = 9;
+            this.barStaticItemResult.Name = "barStaticItemResult";
+            this.barStaticItemResult.PaintStyle = DevExpress.XtraBars.BarItemPaintStyle.Caption;
+            //
             // btnSkin
-            // 
+            //
             this.btnSkin.Caption = "皮肤";
             this.btnSkin.Id = 7;
             this.btnSkin.Name = "btnSkin";
@@ -150,13 +151,13 @@
             this.ribbonPageGroup_About.ItemLinks.Add(this.btnAbout);
             this.ribbonPageGroup_About.Name = "ribbonPageGroup_About";
             this.ribbonPageGroup_About.Text = "关于";
-            // 
+            //
             // ribbonStatusBar1
-            // 
+            //
             this.ribbonStatusBar1.ItemLinks.Add(this.barLinkUser);
             this.ribbonStatusBar1.ItemLinks.Add(this.barLinkDate);
-            this.ribbonStatusBar1.ItemLinks.Add(this.barLinkCount);
             this.ribbonStatusBar1.ItemLinks.Add(this.barStaticItem1);
+            this.ribbonStatusBar1.ItemLinks.Add(this.barStaticItemResult);
             this.ribbonStatusBar1.Location = new System.Drawing.Point(0, 654);
             this.ribbonStatusBar1.Name = "ribbonStatusBar1";
             this.ribbonStatusBar1.Ribbon = this.ribbonControl1;
@@ -293,7 +294,6 @@
         private DevExpress.XtraBars.Docking.DockManager dockManager1;
         private DevExpress.XtraBars.BarLinkContainerItem barLinkUser;
         private DevExpress.XtraBars.BarLinkContainerItem barLinkDate;
-        private DevExpress.XtraBars.BarLinkContainerItem barLinkCount;
         private DevExpress.XtraBars.Ribbon.RibbonStatusBar ribbonStatusBar1;
         private DevExpress.XtraBars.Docking.DockPanel dockPanel1;
         private DevExpress.XtraBars.Docking.ControlContainer dockPanel1_Container;
@@ -306,5 +306,6 @@
         private DevExpress.XtraTabbedMdi.XtraTabbedMdiManager xtraTabbedMdiManager1;
         private DevExpress.XtraBars.BarStaticItem barStaticItem1;
         private DevExpress.XtraBars.BarButtonItem btnSkin;
+        public DevExpress.XtraBars.BarStaticItem barStaticItemResult;
     }
 }

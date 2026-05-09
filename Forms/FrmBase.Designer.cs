@@ -106,7 +106,6 @@
             this.btnSave.Hint = "保存修改";
             this.btnSave.Id = 1;
             this.btnSave.Name = "btnSave";
-            this.btnSave.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.btnSave_ItemClick_1);
             // 
             // btnDelete
             // 

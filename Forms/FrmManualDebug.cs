@@ -31,13 +31,17 @@ namespace WCS_Login
             }
         }
 
+        private DataTable _dataTable;
+        
         /// <summary>
         /// 加载数据
         /// </summary>
         private void LoadData()
         {
             string sql = "SELECT Id, DebugItem, CurrentValue, TargetValue, Status, LastUpdateTime, Remark FROM T_ManualDebug";
-            gridControl1.DataSource = DbHelper.ExecuteQuery(sql);
+            _dataTable = DbHelper.ExecuteQuery(sql);
+            gridControl1.DataSource = _dataTable;
+            if (_dataTable != null) { _dataTable.AcceptChanges(); }
         }
 
         /// <summary>
@@ -153,15 +157,21 @@ namespace WCS_Login
 
                 if (rows > 0)
                 {
+                    UpdateRowsAffected(rows, true);
                     DbHelper.LogToDatabase(Program.CurrentUserName, "保存数据", "手动调试", $"修改调试项 {debugItem}", "INFO");
                     Logger.Info($"用户 {Program.CurrentUserName} 保存手动调试数据，调试项：{debugItem}");
 
                     XtraMessageBox.Show("保存成功！", "提示");
                     LoadData();
                 }
+                else
+                {
+                    UpdateRowsAffected(0, false);
+                }
             }
             catch (Exception ex)
             {
+                UpdateRowsAffected(0, false);
                 DbHelper.LogToDatabase(Program.CurrentUserName, "保存数据", "手动调试", $"保存失败：{ex.Message}", "ERROR");
                 Logger.Error($"保存失败：{ex.Message}", Program.CurrentUserName);
 
@@ -176,37 +186,51 @@ namespace WCS_Login
         {
             try
             {
-                var row = gridView1.GetFocusedRow();
-                if (row == null)
+                int[] selectedRows = gridView1.GetSelectedRows();
+                if (selectedRows == null || selectedRows.Length == 0)
                 {
                     XtraMessageBox.Show("请选择要删除的记录！", "提示");
                     return;
                 }
 
-                if (XtraMessageBox.Show("确定要删除选中记录吗？", "确认",
+                if (XtraMessageBox.Show($"确定要删除选中的 {selectedRows.Length} 条记录吗？", "确认",
                     MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 {
                     return;
                 }
 
-                string id = gridView1.GetFocusedRowCellValue("Id").ToString();
-
-                string sql = "DELETE FROM T_ManualDebug WHERE Id = @Id";
-                int rows = DbHelper.ExecuteNonQuery(sql, new SqlParameter[] {
-            new SqlParameter("@Id", id)
-        });
-
-                if (rows > 0)
+                int totalRowsAffected = 0;
+                foreach (int rowHandle in selectedRows)
                 {
+                    if (!gridView1.IsDataRow(rowHandle)) continue;
+
+                    string id = gridView1.GetRowCellValue(rowHandle, "Id").ToString();
+
+                    string sql = "DELETE FROM T_ManualDebug WHERE Id = @Id";
+                    int rows = DbHelper.ExecuteNonQuery(sql, new SqlParameter[] {
+                        new SqlParameter("@Id", id)
+                    });
+
+                    totalRowsAffected += rows;
+
                     DbHelper.LogToDatabase(Program.CurrentUserName, "删除数据", "手动调试", $"删除调试项 {id}", "INFO");
                     Logger.Info($"用户 {Program.CurrentUserName} 删除手动调试数据，ID：{id}");
+                }
 
-                    XtraMessageBox.Show("删除成功！", "提示");
+                if (totalRowsAffected > 0)
+                {
+                    UpdateRowsAffected(totalRowsAffected, true);
+                    XtraMessageBox.Show($"成功删除 {totalRowsAffected} 条记录！", "提示");
                     LoadData();
+                }
+                else
+                {
+                    UpdateRowsAffected(0, false);
                 }
             }
             catch (Exception ex)
             {
+                UpdateRowsAffected(0, false);
                 DbHelper.LogToDatabase(Program.CurrentUserName, "删除数据", "手动调试", $"删除失败：{ex.Message}", "ERROR");
                 Logger.Error($"删除失败：{ex.Message}", Program.CurrentUserName);
 

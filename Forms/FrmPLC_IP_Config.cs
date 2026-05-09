@@ -131,13 +131,23 @@ namespace WCS_Login
 
                 if (_dataTable == null || _dataTable.Rows.Count == 0)
                 {
+                    UpdateRowsAffected(0, false);
                     XtraMessageBox.Show("没有要保存的数据！", "提示");
+                    return;
+                }
+
+                // 获取有变化的行（Added + Modified）
+                DataTable changes = _dataTable.GetChanges();
+                if (changes == null || changes.Rows.Count == 0)
+                {
+                    UpdateRowsAffected(0, false);
+                    XtraMessageBox.Show("没有需要保存的数据！", "提示");
                     return;
                 }
 
                 int insertCount = 0, updateCount = 0;
 
-                foreach (DataRow row in _dataTable.Rows)
+                foreach (DataRow row in changes.Rows)
                 {
                     if (row.RowState == DataRowState.Deleted) continue;
 
@@ -154,6 +164,7 @@ namespace WCS_Login
 
                     if (string.IsNullOrEmpty(ip))
                     {
+                        UpdateRowsAffected(0, false);
                         XtraMessageBox.Show($"PLC 编号 {plcNo} 的 IP 地址不能为空！", "提示");
                         return;
                     }
@@ -172,16 +183,20 @@ namespace WCS_Login
                             new SqlParameter("@Remark", string.IsNullOrEmpty(remark) ? (object)DBNull.Value : remark)
                         };
 
-                        DbHelper.ExecuteNonQuery(insertSql, parameters);
-                        insertCount++;
+                        int rows = DbHelper.ExecuteNonQuery(insertSql, parameters);
+                        insertCount += rows;
                     }
-                    else
+                    else if (row.RowState == DataRowState.Modified)
                     {
-                        // PlcNo 有值说明是修改行
                         string updateSql = @"UPDATE T_PLC_IP_Config
                                              SET IP = @IP, Port = @Port, PlcType = @PlcType,
                                                  HeartbeatAddress = @HeartbeatAddress, Remark = @Remark
-                                             WHERE PlcNo = @PlcNo";
+                                             WHERE PlcNo = @PlcNo
+                                             AND (ISNULL(IP,'') <> ISNULL(@IP,'')
+                                                  OR ISNULL(Port,'') <> ISNULL(@Port,'')
+                                                  OR ISNULL(PlcType,'') <> ISNULL(@PlcType,'')
+                                                  OR ISNULL(HeartbeatAddress,'') <> ISNULL(@HeartbeatAddress,'')
+                                                  OR ISNULL(Remark,'') <> ISNULL(@Remark,''))";
 
                         SqlParameter[] parameters = {
                             new SqlParameter("@IP", ip),
@@ -192,25 +207,33 @@ namespace WCS_Login
                             new SqlParameter("@PlcNo", plcNo)
                         };
 
-                        DbHelper.ExecuteNonQuery(updateSql, parameters);
-                        updateCount++;
+                        int rows = DbHelper.ExecuteNonQuery(updateSql, parameters);
+                        updateCount += rows;
                     }
                 }
 
                 if (insertCount > 0 || updateCount > 0)
                 {
+                    int totalRows = insertCount + updateCount;
+                    UpdateRowsAffected(totalRows, true);
+
                     string msg = $"保存成功！";
                     if (insertCount > 0) msg += $"\n新增 {insertCount} 条";
                     if (updateCount > 0) msg += $"\n修改 {updateCount} 条";
 
                     DbHelper.LogToDatabase(Program.CurrentUserName, "保存数据", "PLC 配置", $"新增 {insertCount} 条，修改 {updateCount} 条", "INFO");
                     Logger.Info($"用户 {Program.CurrentUserName} 保存 PLC IP 配置，新增 {insertCount} 条，修改 {updateCount} 条");
-                    XtraMessageBox.Show(msg, "提示");
                     LoadData();
+                }
+                else
+                {
+                    UpdateRowsAffected(0, false);
+                    XtraMessageBox.Show("没有实际需要更新的数据！", "提示");
                 }
             }
             catch (Exception ex)
             {
+                UpdateRowsAffected(0, false);
                 DbHelper.LogToDatabase(Program.CurrentUserName, "保存数据", "PLC 配置", $"保存失败：{ex.Message}", "ERROR");
                 Logger.Error($"保存失败：{ex.Message}", Program.CurrentUserName);
                 XtraMessageBox.Show($"保存失败：{ex.Message}", "错误");
@@ -247,16 +270,18 @@ namespace WCS_Login
 
                 if (rows > 0)
                 {
+                    UpdateRowsAffected(rows, true);
+
                     // 记录日志
                     DbHelper.LogToDatabase(Program.CurrentUserName, "删除数据", "PLC 配置", $"删除 PLC {plcNo}", "INFO");
                     Logger.Info($"用户 {Program.CurrentUserName} 删除 PLC IP 配置，PLC 编号：{plcNo}");
 
-                    XtraMessageBox.Show("删除成功！", "提示");
                     LoadData();
                 }
             }
             catch (Exception ex)
             {
+                UpdateRowsAffected(0, false);
                 DbHelper.LogToDatabase(Program.CurrentUserName, "删除数据", "PLC 配置", $"删除失败：{ex.Message}", "ERROR");
                 Logger.Error($"删除失败：{ex.Message}", Program.CurrentUserName);
 
@@ -387,6 +412,7 @@ namespace WCS_Login
                     }
                 }
 
+                UpdateRowsAffected(successCount, successCount > 0);
                 DbHelper.LogToDatabase(Program.CurrentUserName, "导入数据", "PLC 配置", $"从 {ofd.FileName} 导入，成功 {successCount} 条，失败 {failCount} 条", "INFO");
                 Logger.Info($"用户 {Program.CurrentUserName} 导入 PLC IP 配置，成功 {successCount} 条，失败 {failCount} 条");
                 XtraMessageBox.Show($"导入完成！\n成功：{successCount} 条\n失败：{failCount} 条", "提示");
@@ -394,6 +420,7 @@ namespace WCS_Login
             }
             catch (Exception ex)
             {
+                UpdateRowsAffected(0, false);
                 DbHelper.LogToDatabase(Program.CurrentUserName, "导入数据", "PLC 配置", $"导入失败：{ex.Message}", "ERROR");
                 Logger.Error($"导入失败：{ex.Message}", Program.CurrentUserName);
                 XtraMessageBox.Show($"导入失败：{ex.Message}", "错误");

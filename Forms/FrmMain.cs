@@ -14,14 +14,13 @@ namespace WCS_Login
 {
     public partial class FrmMain : Form
     {
-        private WcsController _wcsController;  // ← 添加这个
+        private WcsController _wcsController;
+        private System.Windows.Forms.Timer _statusBarTimer;
         public FrmMain()
         {
             InitializeComponent();
             InitMainForm();
-            // 启动 WCS 系统
             this.Shown += FrmMain_Shown;
-            // 🔽 绑定皮肤按钮
             btnSkin.ItemClick += BtnSkin_ItemClick;
         }
 
@@ -61,7 +60,7 @@ namespace WCS_Login
             // 设置状态栏内容
             barLinkUser.Caption = "当前用户：admin";
             barLinkDate.Caption = $"当前日期：{DateTime.Now:yyyy-MM-dd HH:mm:ss}";
-            barLinkCount.Caption = "总条目：0";
+            barStaticItemResult.Caption = "影响行数：0";
         }
 
         #region Ribbon 按钮事件

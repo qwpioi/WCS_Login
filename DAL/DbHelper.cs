@@ -7,29 +7,69 @@ namespace WCS_Login
 {
     public static class DbHelper
     {
-        // 获取连接字符串
-        private static string connStr = ConfigurationManager.ConnectionStrings["WCS_Connection"].ConnectionString;
+        private static string _connStr;
+        private static bool _initialized = false;
+
+        private static void EnsureConnectionStringInitialized()
+        {
+            if (_initialized) return;
+
+            try
+            {
+                var connectionSettings = ConfigurationManager.ConnectionStrings["WCS_Connection"];
+                if (connectionSettings == null)
+                {
+                    throw new InvalidOperationException("在 App.config 中未找到名为 'WCS_Connection' 的连接字符串");
+                }
+                _connStr = connectionSettings.ConnectionString;
+                if (string.IsNullOrWhiteSpace(_connStr))
+                {
+                    throw new InvalidOperationException("连接字符串 'WCS_Connection' 的值为空");
+                }
+                _initialized = true;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"初始化数据库连接字符串失败：{ex.Message}", ex);
+            }
+        }
+
+        private static string connStr
+        {
+            get
+            {
+                EnsureConnectionStringInitialized();
+                return _connStr;
+            }
+        }
 
         /// <summary>
         /// 执行查询，返回 DataTable
         /// </summary>
         public static DataTable ExecuteQuery(string sql, SqlParameter[] parameters = null)
         {
-            using (SqlConnection conn = new SqlConnection(connStr))
+            try
             {
-                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                using (SqlConnection conn = new SqlConnection(connStr))
                 {
-                    if (parameters != null)
+                    using (SqlCommand cmd = new SqlCommand(sql, conn))
                     {
-                        cmd.Parameters.AddRange(parameters);
-                    }
+                        if (parameters != null)
+                        {
+                            cmd.Parameters.AddRange(parameters);
+                        }
 
-                    conn.Open();
-                    SqlDataAdapter da = new SqlDataAdapter(cmd);
-                    DataTable dt = new DataTable();
-                    da.Fill(dt);
-                    return dt;
+                        conn.Open();
+                        SqlDataAdapter da = new SqlDataAdapter(cmd);
+                        DataTable dt = new DataTable();
+                        da.Fill(dt);
+                        return dt;
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"执行查询失败：{ex.Message}\nSQL：{sql}", ex);
             }
         }
 
@@ -38,18 +78,25 @@ namespace WCS_Login
         /// </summary>
         public static int ExecuteNonQuery(string sql, SqlParameter[] parameters = null)
         {
-            using (SqlConnection conn = new SqlConnection(connStr))
+            try
             {
-                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                using (SqlConnection conn = new SqlConnection(connStr))
                 {
-                    if (parameters != null)
+                    using (SqlCommand cmd = new SqlCommand(sql, conn))
                     {
-                        cmd.Parameters.AddRange(parameters);
-                    }
+                        if (parameters != null)
+                        {
+                            cmd.Parameters.AddRange(parameters);
+                        }
 
-                    conn.Open();
-                    return cmd.ExecuteNonQuery();
+                        conn.Open();
+                        return cmd.ExecuteNonQuery();
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"执行非查询操作失败：{ex.Message}\nSQL：{sql}", ex);
             }
         }
 

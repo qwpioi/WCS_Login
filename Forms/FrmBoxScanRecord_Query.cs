@@ -283,15 +283,21 @@ namespace WCS_Login
 
                 if (rows > 0)
                 {
+                    UpdateRowsAffected(rows, true);
                     DbHelper.LogToDatabase(Program.CurrentUserName, "保存数据", "扫描记录", $"修改扫描记录 {id}", "INFO");
                     Logger.Info($"用户 {Program.CurrentUserName} 保存周转箱扫描记录，记录 ID：{id}");
 
                     XtraMessageBox.Show("保存成功！", "提示");
                     LoadData();
                 }
+                else
+                {
+                    UpdateRowsAffected(0, false);
+                }
             }
             catch (Exception ex)
             {
+                UpdateRowsAffected(0, false);
                 DbHelper.LogToDatabase(Program.CurrentUserName, "保存数据", "扫描记录", $"保存失败：{ex.Message}", "ERROR");
                 Logger.Error($"保存失败：{ex.Message}", Program.CurrentUserName);
 
@@ -306,37 +312,51 @@ namespace WCS_Login
         {
             try
             {
-                var row = gridView1.GetFocusedRow();
-                if (row == null)
+                int[] selectedRows = gridView1.GetSelectedRows();
+                if (selectedRows == null || selectedRows.Length == 0)
                 {
                     XtraMessageBox.Show("请选择要删除的记录！", "提示");
                     return;
                 }
 
-                if (XtraMessageBox.Show("确定要删除选中记录吗？", "确认",
+                if (XtraMessageBox.Show($"确定要删除选中的 {selectedRows.Length} 条记录吗？", "确认",
                     MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 {
                     return;
                 }
 
-                string id = gridView1.GetFocusedRowCellValue("Id").ToString();
-
-                string sql = "DELETE FROM T_BoxScanRecord WHERE Id = @Id";
-                int rows = DbHelper.ExecuteNonQuery(sql, new SqlParameter[] {
-                    new SqlParameter("@Id", id)
-                });
-
-                if (rows > 0)
+                int totalRowsAffected = 0;
+                foreach (int rowHandle in selectedRows)
                 {
+                    if (!gridView1.IsDataRow(rowHandle)) continue;
+
+                    string id = gridView1.GetRowCellValue(rowHandle, "Id").ToString();
+
+                    string sql = "DELETE FROM T_BoxScanRecord WHERE Id = @Id";
+                    int rows = DbHelper.ExecuteNonQuery(sql, new SqlParameter[] {
+                        new SqlParameter("@Id", id)
+                    });
+
+                    totalRowsAffected += rows;
+
                     DbHelper.LogToDatabase(Program.CurrentUserName, "删除数据", "扫描记录", $"删除扫描记录 {id}", "INFO");
                     Logger.Info($"用户 {Program.CurrentUserName} 删除周转箱扫描记录，记录 ID：{id}");
+                }
 
-                    XtraMessageBox.Show("删除成功！", "提示");
+                if (totalRowsAffected > 0)
+                {
+                    UpdateRowsAffected(totalRowsAffected, true);
+                    XtraMessageBox.Show($"成功删除 {totalRowsAffected} 条记录！", "提示");
                     LoadData();
+                }
+                else
+                {
+                    UpdateRowsAffected(0, false);
                 }
             }
             catch (Exception ex)
             {
+                UpdateRowsAffected(0, false);
                 DbHelper.LogToDatabase(Program.CurrentUserName, "删除数据", "扫描记录", $"删除失败：{ex.Message}", "ERROR");
                 Logger.Error($"删除失败：{ex.Message}", Program.CurrentUserName);
 

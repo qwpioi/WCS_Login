@@ -68,10 +68,11 @@
             this.gridColumn7});
             this.gridView1.GridControl = this.gridControl1;
             this.gridView1.Name = "gridView1";
+            this.gridView1.OptionsSelection.MultiSelect = true;
             this.gridView1.CustomUnboundColumnData += new DevExpress.XtraGrid.Views.Base.CustomColumnDataEventHandler(this.gridView1_CustomUnboundColumnData);
-            //
+            // 
             // gridColumnRowNo
-            //
+            // 
             this.gridColumnRowNo.Caption = "行号";
             this.gridColumnRowNo.FieldName = "RowNo";
             this.gridColumnRowNo.MinWidth = 30;
@@ -82,7 +83,7 @@
             this.gridColumnRowNo.Visible = true;
             this.gridColumnRowNo.VisibleIndex = 0;
             this.gridColumnRowNo.Width = 30;
-            //
+            // 
             // gridColumn1
             // 
             this.gridColumn1.Caption = "ID";

@@ -47,6 +47,7 @@ namespace WCS_Login
             string sql = "SELECT ScannerNo, IP, Port, ScannerType, Remark FROM T_EthernetScanner_Config";
             _dataTable = DbHelper.ExecuteQuery(sql);
             gridControl1.DataSource = _dataTable;
+            if (_dataTable != null) { _dataTable.AcceptChanges(); }
         }
 
         /// <summary>
@@ -158,7 +159,7 @@ namespace WCS_Login
                         DbHelper.ExecuteNonQuery(insertSql, parameters);
                         insertCount++;
                     }
-                    else
+                    else if (row.RowState == DataRowState.Modified)
                     {
                         string updateSql = @"UPDATE T_EthernetScanner_Config
                                              SET IP = @IP, Port = @Port, ScannerType = @ScannerType, Remark = @Remark
@@ -172,25 +173,34 @@ namespace WCS_Login
                             new SqlParameter("@ScannerNo", scannerNo)
                         };
 
-                        DbHelper.ExecuteNonQuery(updateSql, parameters);
-                        updateCount++;
+                        int rows = DbHelper.ExecuteNonQuery(updateSql, parameters);
+                        updateCount += rows;
                     }
                 }
 
                 if (insertCount > 0 || updateCount > 0)
                 {
+                    int totalRows = insertCount + updateCount;
+                    UpdateRowsAffected(totalRows, true);
+
                     string msg = $"保存成功！";
                     if (insertCount > 0) msg += $"\n新增 {insertCount} 条";
                     if (updateCount > 0) msg += $"\n修改 {updateCount} 条";
 
                     DbHelper.LogToDatabase(Program.CurrentUserName, "保存数据", "扫描器配置", $"新增 {insertCount} 条，修改 {updateCount} 条", "INFO");
                     Logger.Info($"用户 {Program.CurrentUserName} 保存以太网扫描器配置，新增 {insertCount} 条，修改 {updateCount} 条");
-                    XtraMessageBox.Show(msg, "提示");
+                    _dataTable.AcceptChanges();
                     LoadData();
+                }
+                else
+                {
+                    UpdateRowsAffected(0, false);
+                    XtraMessageBox.Show("没有需要保存的数据！", "提示");
                 }
             }
             catch (Exception ex)
             {
+                UpdateRowsAffected(0, false);
                 DbHelper.LogToDatabase(Program.CurrentUserName, "保存数据", "扫描器配置", $"保存失败：{ex.Message}", "ERROR");
                 Logger.Error($"保存失败：{ex.Message}", Program.CurrentUserName);
                 XtraMessageBox.Show($"保存失败：{ex.Message}", "错误");
@@ -226,37 +236,52 @@ namespace WCS_Login
         {
             try
             {
-                var row = gridView1.GetFocusedRow();
-                if (row == null)
+                int[] selectedRows = gridView1.GetSelectedRows();
+                if (selectedRows == null || selectedRows.Length == 0)
                 {
                     XtraMessageBox.Show("请选择要删除的记录！", "提示");
                     return;
                 }
 
-                if (XtraMessageBox.Show("确定要删除选中记录吗？", "确认",
+                if (XtraMessageBox.Show($"确定要删除选中的 {selectedRows.Length} 条记录吗？", "确认",
                     MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 {
                     return;
                 }
 
-                string scannerNo = gridView1.GetFocusedRowCellValue("ScannerNo").ToString();
-
-                string sql = "DELETE FROM T_EthernetScanner_Config WHERE ScannerNo = @ScannerNo";
-                int rows = DbHelper.ExecuteNonQuery(sql, new SqlParameter[] {
-            new SqlParameter("@ScannerNo", scannerNo)
-        });
-
-                if (rows > 0)
+                int totalRowsAffected = 0;
+                foreach (int rowHandle in selectedRows)
                 {
+                    if (!gridView1.IsDataRow(rowHandle)) continue;
+
+                    string scannerNo = gridView1.GetRowCellValue(rowHandle, "ScannerNo").ToString();
+
+                    string sql = "DELETE FROM T_EthernetScanner_Config WHERE ScannerNo = @ScannerNo";
+                    int rows = DbHelper.ExecuteNonQuery(sql, new SqlParameter[] {
+                        new SqlParameter("@ScannerNo", scannerNo)
+                    });
+
+                    totalRowsAffected += rows;
+
                     DbHelper.LogToDatabase(Program.CurrentUserName, "删除数据", "扫描器配置", $"删除扫描器 {scannerNo}", "INFO");
                     Logger.Info($"用户 {Program.CurrentUserName} 删除以太网扫描器配置，扫描器编号：{scannerNo}");
+                }
 
-                    XtraMessageBox.Show("删除成功！", "提示");
+                if (totalRowsAffected > 0)
+                {
+                    UpdateRowsAffected(totalRowsAffected, true);
+                    _dataTable.AcceptChanges();
+                    XtraMessageBox.Show($"成功删除 {totalRowsAffected} 条记录！", "提示");
                     LoadData();
+                }
+                else
+                {
+                    UpdateRowsAffected(0, false);
                 }
             }
             catch (Exception ex)
             {
+                UpdateRowsAffected(0, false);
                 DbHelper.LogToDatabase(Program.CurrentUserName, "删除数据", "扫描器配置", $"删除失败：{ex.Message}", "ERROR");
                 Logger.Error($"删除失败：{ex.Message}", Program.CurrentUserName);
 
@@ -342,6 +367,7 @@ namespace WCS_Login
                     }
                 }
 
+                UpdateRowsAffected(successCount, successCount > 0);
                 DbHelper.LogToDatabase(Program.CurrentUserName, "导入数据", "扫描器配置", $"从 {ofd.FileName} 导入，成功 {successCount} 条，失败 {failCount} 条", "INFO");
                 Logger.Info($"用户 {Program.CurrentUserName} 导入以太网扫描器配置，成功 {successCount} 条，失败 {failCount} 条");
                 XtraMessageBox.Show($"导入完成！\n成功：{successCount} 条\n失败：{failCount} 条", "提示");
@@ -349,6 +375,7 @@ namespace WCS_Login
             }
             catch (Exception ex)
             {
+                UpdateRowsAffected(0, false);
                 DbHelper.LogToDatabase(Program.CurrentUserName, "导入数据", "扫描器配置", $"导入失败：{ex.Message}", "ERROR");
                 Logger.Error($"导入失败：{ex.Message}", Program.CurrentUserName);
                 XtraMessageBox.Show($"导入失败：{ex.Message}", "错误");

@@ -53,9 +53,9 @@
             this.gridControl1.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gridView1});
             this.gridControl1.Load += new System.EventHandler(this.FrmPLC_IP_Config_Load);
-            //
+            // 
             // gridView1
-            //
+            // 
             this.gridView1.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
             this.gridColumnRowNo,
             this.gridColumn1,
@@ -66,10 +66,11 @@
             this.gridColumn6});
             this.gridView1.GridControl = this.gridControl1;
             this.gridView1.Name = "gridView1";
+            this.gridView1.OptionsSelection.MultiSelect = true;
             this.gridView1.CustomUnboundColumnData += new DevExpress.XtraGrid.Views.Base.CustomColumnDataEventHandler(this.gridView1_CustomUnboundColumnData);
-            //
+            // 
             // gridColumnRowNo
-            //
+            // 
             this.gridColumnRowNo.Caption = "行号";
             this.gridColumnRowNo.FieldName = "RowNo";
             this.gridColumnRowNo.MinWidth = 30;
@@ -80,9 +81,9 @@
             this.gridColumnRowNo.Visible = true;
             this.gridColumnRowNo.VisibleIndex = 0;
             this.gridColumnRowNo.Width = 30;
-            //
+            // 
             // gridColumn1
-            //
+            // 
             this.gridColumn1.Caption = "PLC 编号";
             this.gridColumn1.FieldName = "PlcNo";
             this.gridColumn1.MinWidth = 30;

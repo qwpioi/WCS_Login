@@ -20,9 +20,12 @@ namespace WCS_Login
 
         // 分页变量
         private int _currentPage = 1;
-        private const int PageSize = 23;
+        private const int PageSize = 22;
         private int _totalRecords = 0;
         private int _totalPages = 0;
+
+        // 防止自动刷新与手动查询并发
+        private bool _isRefreshing = false;
 
         public FrmBoxScanRecord_Query()
         {
@@ -39,6 +42,8 @@ namespace WCS_Login
         {
             try
             {
+                dateStart.EditValue = null;
+                dateEnd.EditValue = null;
                 LoadData();
                 // ✅ 添加：设置时间列显示格式（精确到时分秒）
                 var scanTimeColumn = gridView1.Columns["ScanTime"];
@@ -47,7 +52,6 @@ namespace WCS_Login
                     scanTimeColumn.DisplayFormat.FormatType = DevExpress.Utils.FormatType.DateTime;
                     scanTimeColumn.DisplayFormat.FormatString = "yyyy-MM-dd HH:mm:ss";
                 }
-
 
                 if (gridControl1.DataSource is DataTable dt)
                 {
@@ -73,43 +77,100 @@ namespace WCS_Login
         }
 
         /// <summary>
-        /// 加载数据（分页查询）
+        /// 构建筛选 WHERE 子句和参数（每次调用创建新的参数实例）
+        /// </summary>
+        private string BuildWhereClause(List<SqlParameter> parameters)
+        {
+            List<string> whereConditions = new List<string>();
+
+            if (!string.IsNullOrWhiteSpace(txtBoxNo.Text))
+            {
+                whereConditions.Add("BoxNo LIKE @BoxNo");
+                parameters.Add(new SqlParameter("@BoxNo", SqlDbType.NVarChar, 50) { Value = "%" + txtBoxNo.Text.Trim() + "%" });
+            }
+            if (!string.IsNullOrWhiteSpace(txtScanner.Text))
+            {
+                whereConditions.Add("ScannerName LIKE @ScannerName");
+                parameters.Add(new SqlParameter("@ScannerName", SqlDbType.NVarChar, 50) { Value = "%" + txtScanner.Text.Trim() + "%" });
+            }
+            if (!string.IsNullOrWhiteSpace(txtStation.Text))
+            {
+                whereConditions.Add("StationName LIKE @StationName");
+                parameters.Add(new SqlParameter("@StationName", SqlDbType.NVarChar, 50) { Value = "%" + txtStation.Text.Trim() + "%" });
+            }
+            if (!string.IsNullOrWhiteSpace(cmbScanResult.Text))
+            {
+                whereConditions.Add("ScanResult = @ScanResult");
+                parameters.Add(new SqlParameter("@ScanResult", SqlDbType.NVarChar, 20) { Value = cmbScanResult.Text.Trim() });
+            }
+            if (dateStart.EditValue != null && dateStart.DateTime != DateTime.MinValue)
+            {
+                whereConditions.Add("ScanTime >= @StartTime");
+                parameters.Add(new SqlParameter("@StartTime", SqlDbType.DateTime) { Value = dateStart.DateTime });
+            }
+            if (dateEnd.EditValue != null && dateEnd.DateTime != DateTime.MinValue)
+            {
+                whereConditions.Add("ScanTime <= @EndTime");
+                parameters.Add(new SqlParameter("@EndTime", SqlDbType.DateTime) { Value = dateEnd.DateTime });
+            }
+
+            return whereConditions.Count > 0 ? "WHERE " + string.Join(" AND ", whereConditions) : "";
+        }
+
+        /// <summary>
+        /// 克隆 SqlParameter 数组（每次调用创建新实例，避免跨 SqlCommand 复用报错）
+        /// </summary>
+        private SqlParameter[] CloneParameters(SqlParameter[] original)
+        {
+            return original.Select(p => new SqlParameter(p.ParameterName, p.SqlDbType, p.Size)
+            {
+                Value = p.Value ?? DBNull.Value
+            }).ToArray();
+        }
+
+        /// <summary>
+        /// 加载数据（分页查询，支持筛选）
         /// </summary>
         private void LoadData()
         {
             try
             {
+                List<SqlParameter> parameters = new List<SqlParameter>();
+                string whereClause = BuildWhereClause(parameters);
+
                 // 查询总记录数
-                string countSql = "SELECT COUNT(*) FROM T_BoxScanRecord";
-                DataTable dtCount = DbHelper.ExecuteQuery(countSql);
+                string countSql = $"SELECT COUNT(*) FROM T_BoxScanRecord {whereClause}";
+                DataTable dtCount = DbHelper.ExecuteQuery(countSql, parameters.ToArray());
                 _totalRecords = dtCount.Rows.Count > 0 ? Convert.ToInt32(dtCount.Rows[0][0]) : 0;
                 _totalPages = (_totalRecords + PageSize - 1) / PageSize;
 
                 if (_currentPage > _totalPages) _currentPage = Math.Max(1, _totalPages);
 
+                // 为分页查询创建新的参数实例（SqlParameter 不能跨 SqlCommand 复用）
+                SqlParameter[] pageParams = CloneParameters(parameters.ToArray());
+                List<SqlParameter> finalParams = new List<SqlParameter>(pageParams);
+                finalParams.Add(new SqlParameter("@StartRow", SqlDbType.Int) { Value = (_currentPage - 1) * PageSize + 1 });
+                finalParams.Add(new SqlParameter("@EndRow", SqlDbType.Int) { Value = _currentPage * PageSize });
+
                 // ROW_NUMBER() 分页查询，按扫描时间倒序
-                string sql = @"
+                string sql = $@"
                     SELECT Id, BoxNo, ScannerName, ScanTime, ScanResult, StationName, Remark
                     FROM (
                         SELECT Id, BoxNo, ScannerName, ScanTime, ScanResult, StationName, Remark,
                                ROW_NUMBER() OVER (ORDER BY ScanTime DESC) AS RowNum
                         FROM T_BoxScanRecord
+                        {whereClause}
                     ) AS t
                     WHERE RowNum BETWEEN @StartRow AND @EndRow
                     ORDER BY ScanTime DESC";
 
-                SqlParameter[] parameters = {
-                    new SqlParameter("@StartRow", SqlDbType.Int) { Value = (_currentPage - 1) * PageSize + 1 },
-                    new SqlParameter("@EndRow", SqlDbType.Int) { Value = _currentPage * PageSize }
-                };
-
-                gridControl1.DataSource = DbHelper.ExecuteQuery(sql, parameters);
+                gridControl1.DataSource = DbHelper.ExecuteQuery(sql, finalParams.ToArray());
 
                 UpdatePageInfo();
 
-                if (gridControl1.DataSource is DataTable dt)
+                if (gridControl1.DataSource is DataTable dt2)
                 {
-                    _lastRecordCount = dt.Rows.Count;
+                    _lastRecordCount = dt2.Rows.Count;
                 }
             }
             catch (Exception ex)
@@ -164,49 +225,58 @@ namespace WCS_Login
         }
 
         /// <summary>
-        /// 定时器事件 - 自动检测新数据
+        /// 定时器事件 - 自动检测新数据（基于当前筛选条件）
         /// </summary>
         private void AutoRefreshTimer_Tick(object sender, EventArgs e)
         {
+            if (_isRefreshing) return;
+            _isRefreshing = true;
+
             try
             {
-                string countSql = "SELECT COUNT(*) FROM T_BoxScanRecord";
-                DataTable dt = DbHelper.ExecuteQuery(countSql);
+                List<SqlParameter> parameters = new List<SqlParameter>();
+                string whereClause = BuildWhereClause(parameters);
+                string countSql = $"SELECT COUNT(*) FROM T_BoxScanRecord {whereClause}";
+                DataTable dt = DbHelper.ExecuteQuery(countSql, parameters.ToArray());
                 int currentCount = dt.Rows.Count > 0 ? Convert.ToInt32(dt.Rows[0][0]) : 0;
 
                 if (currentCount != _lastRecordCount)
                 {
-                    LoadData();
-                    _lastRecordCount = currentCount;
-                    this.Text = $"周转箱扫描记录查询 (已更新：{DateTime.Now:HH:mm:ss})";
+                    this.BeginInvoke(new Action(() =>
+                    {
+                        LoadData();
+                        _lastRecordCount = currentCount;
+                        this.Text = $"周转箱扫描记录查询 (已更新：{DateTime.Now:HH:mm:ss})";
+                    }));
                 }
             }
             catch (Exception ex)
             {
                 Logger.Error($"自动刷新失败：{ex.Message}");
             }
+            finally
+            {
+                _isRefreshing = false;
+            }
         }
 
         /// <summary>
-        /// 重写查询按钮事件
+        /// 重写查询按钮事件 - 使用搜索面板的筛选条件进行查询
         /// </summary>
         protected override void BtnQuery_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             try
             {
+                _currentPage = 1;
                 LoadData();
 
-                // 记录日志
-                DbHelper.LogToDatabase(Program.CurrentUserName, "查询数据", "扫描记录", "查询周转箱扫描记录列表", "INFO");
-                Logger.Info($"用户 {Program.CurrentUserName} 查询周转箱扫描记录");
-
-                XtraMessageBox.Show("查询成功！", "提示");
+                DbHelper.LogToDatabase(Program.CurrentUserName, "筛选查询", "扫描记录", "执行筛选查询", "INFO");
+                Logger.Info($"用户 {Program.CurrentUserName} 执行筛选查询周转箱扫描记录");
             }
             catch (Exception ex)
             {
-                DbHelper.LogToDatabase(Program.CurrentUserName, "查询数据", "扫描记录", $"查询失败：{ex.Message}", "ERROR");
-                Logger.Error($"查询失败：{ex.Message}", Program.CurrentUserName);
-
+                DbHelper.LogToDatabase(Program.CurrentUserName, "筛选查询", "扫描记录", $"查询失败：{ex.Message}", "ERROR");
+                Logger.Error($"筛选查询失败：{ex.Message}", Program.CurrentUserName);
                 XtraMessageBox.Show($"查询失败：{ex.Message}", "错误");
             }
         }
@@ -432,5 +502,43 @@ namespace WCS_Login
                 XtraMessageBox.Show("已经是最后一页了！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
+        /// <summary>
+        /// 重置筛选条件按钮点击
+        /// </summary>
+        private void btnFilterReset_Click(object sender, EventArgs e)
+        {
+            txtBoxNo.Text = "";
+            txtScanner.Text = "";
+            txtStation.Text = "";
+            cmbScanResult.SelectedIndex = -1;
+            cmbScanResult.Text = "";
+            dateStart.EditValue = null;
+            dateEnd.EditValue = null;
+
+            _currentPage = 1;
+            LoadData();
+        }
+
+        /// <summary>
+        /// 页码跳转
+        /// </summary>
+        private void txtPageNo_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                if (int.TryParse(txtPageNo.Text, out int page) && page >= 1 && page <= _totalPages)
+                {
+                    _currentPage = page;
+                    LoadData();
+                }
+                else
+                {
+                    XtraMessageBox.Show($"请输入 1 到 {_totalPages} 之间的页码", "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    txtPageNo.EditValue = _currentPage.ToString();
+                }
+            }
+        }
+
+        
     }
 }

@@ -28,6 +28,20 @@ namespace WCS_Login
         /// </summary>
         private void InitializeComponent()
         {
+            this.panelControlSearch = new DevExpress.XtraEditors.PanelControl();
+            this.labelControlBoxNo = new DevExpress.XtraEditors.LabelControl();
+            this.labelControlScanner = new DevExpress.XtraEditors.LabelControl();
+            this.labelControlStation = new DevExpress.XtraEditors.LabelControl();
+            this.labelControlScanResult = new DevExpress.XtraEditors.LabelControl();
+            this.labelControlStartDate = new DevExpress.XtraEditors.LabelControl();
+            this.labelControlEndDate = new DevExpress.XtraEditors.LabelControl();
+            this.btnFilterReset = new DevExpress.XtraEditors.SimpleButton();
+            this.txtBoxNo = new DevExpress.XtraEditors.TextEdit();
+            this.txtScanner = new DevExpress.XtraEditors.TextEdit();
+            this.txtStation = new DevExpress.XtraEditors.TextEdit();
+            this.cmbScanResult = new DevExpress.XtraEditors.ComboBoxEdit();
+            this.dateStart = new DevExpress.XtraEditors.DateEdit();
+            this.dateEnd = new DevExpress.XtraEditors.DateEdit();
             this.gridControl1 = new DevExpress.XtraGrid.GridControl();
             this.gridView1 = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.gridColumnRowNo = new DevExpress.XtraGrid.Columns.GridColumn();
@@ -42,6 +56,16 @@ namespace WCS_Login
             this.txtPageNo = new DevExpress.XtraEditors.TextEdit();
             this.btnNextPage = new DevExpress.XtraEditors.SimpleButton();
             this.btnPrevPage = new DevExpress.XtraEditors.SimpleButton();
+            ((System.ComponentModel.ISupportInitialize)(this.panelControlSearch)).BeginInit();
+            this.panelControlSearch.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.txtBoxNo.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.txtScanner.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.txtStation.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cmbScanResult.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dateStart.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dateStart.Properties.CalendarTimeProperties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dateEnd.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dateEnd.Properties.CalendarTimeProperties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridControl1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.panelPagination)).BeginInit();
@@ -49,14 +73,168 @@ namespace WCS_Login
             ((System.ComponentModel.ISupportInitialize)(this.txtPageNo.Properties)).BeginInit();
             this.SuspendLayout();
             // 
+            // panelControlSearch
+            // 
+            this.panelControlSearch.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
+            this.panelControlSearch.Controls.Add(this.labelControlBoxNo);
+            this.panelControlSearch.Controls.Add(this.labelControlScanner);
+            this.panelControlSearch.Controls.Add(this.labelControlStation);
+            this.panelControlSearch.Controls.Add(this.labelControlScanResult);
+            this.panelControlSearch.Controls.Add(this.labelControlStartDate);
+            this.panelControlSearch.Controls.Add(this.labelControlEndDate);
+            this.panelControlSearch.Controls.Add(this.btnFilterReset);
+            this.panelControlSearch.Controls.Add(this.txtBoxNo);
+            this.panelControlSearch.Controls.Add(this.txtScanner);
+            this.panelControlSearch.Controls.Add(this.txtStation);
+            this.panelControlSearch.Controls.Add(this.cmbScanResult);
+            this.panelControlSearch.Controls.Add(this.dateStart);
+            this.panelControlSearch.Controls.Add(this.dateEnd);
+            this.panelControlSearch.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panelControlSearch.Location = new System.Drawing.Point(0, 31);
+            this.panelControlSearch.Name = "panelControlSearch";
+            this.panelControlSearch.Size = new System.Drawing.Size(948, 100);
+            this.panelControlSearch.TabIndex = 6;
+            // 
+            // labelControlBoxNo
+            // 
+            this.labelControlBoxNo.Appearance.Options.UseTextOptions = true;
+            this.labelControlBoxNo.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
+            this.labelControlBoxNo.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
+            this.labelControlBoxNo.Location = new System.Drawing.Point(12, 12);
+            this.labelControlBoxNo.Name = "labelControlBoxNo";
+            this.labelControlBoxNo.Size = new System.Drawing.Size(60, 24);
+            this.labelControlBoxNo.TabIndex = 0;
+            this.labelControlBoxNo.Text = "箱号：";
+            // 
+            // labelControlScanner
+            // 
+            this.labelControlScanner.Appearance.Options.UseTextOptions = true;
+            this.labelControlScanner.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
+            this.labelControlScanner.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
+            this.labelControlScanner.Location = new System.Drawing.Point(210, 12);
+            this.labelControlScanner.Name = "labelControlScanner";
+            this.labelControlScanner.Size = new System.Drawing.Size(70, 24);
+            this.labelControlScanner.TabIndex = 2;
+            this.labelControlScanner.Text = "扫描器：";
+            // 
+            // labelControlStation
+            // 
+            this.labelControlStation.Appearance.Options.UseTextOptions = true;
+            this.labelControlStation.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
+            this.labelControlStation.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
+            this.labelControlStation.Location = new System.Drawing.Point(420, 12);
+            this.labelControlStation.Name = "labelControlStation";
+            this.labelControlStation.Size = new System.Drawing.Size(60, 24);
+            this.labelControlStation.TabIndex = 4;
+            this.labelControlStation.Text = "站点：";
+            // 
+            // labelControlScanResult
+            // 
+            this.labelControlScanResult.Appearance.Options.UseTextOptions = true;
+            this.labelControlScanResult.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
+            this.labelControlScanResult.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
+            this.labelControlScanResult.Location = new System.Drawing.Point(-1, 51);
+            this.labelControlScanResult.Name = "labelControlScanResult";
+            this.labelControlScanResult.Size = new System.Drawing.Size(95, 24);
+            this.labelControlScanResult.TabIndex = 6;
+            this.labelControlScanResult.Text = "扫描结果：";
+            // 
+            // labelControlStartDate
+            // 
+            this.labelControlStartDate.Appearance.Options.UseTextOptions = true;
+            this.labelControlStartDate.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
+            this.labelControlStartDate.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
+            this.labelControlStartDate.Location = new System.Drawing.Point(221, 50);
+            this.labelControlStartDate.Name = "labelControlStartDate";
+            this.labelControlStartDate.Size = new System.Drawing.Size(89, 24);
+            this.labelControlStartDate.TabIndex = 8;
+            this.labelControlStartDate.Text = "开始时间：";
+            // 
+            // labelControlEndDate
+            // 
+            this.labelControlEndDate.Appearance.Options.UseTextOptions = true;
+            this.labelControlEndDate.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
+            this.labelControlEndDate.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
+            this.labelControlEndDate.Location = new System.Drawing.Point(459, 50);
+            this.labelControlEndDate.Name = "labelControlEndDate";
+            this.labelControlEndDate.Size = new System.Drawing.Size(91, 24);
+            this.labelControlEndDate.TabIndex = 10;
+            this.labelControlEndDate.Text = "结束时间：";
+            // 
+            // btnFilterReset
+            // 
+            this.btnFilterReset.Location = new System.Drawing.Point(720, 48);
+            this.btnFilterReset.Name = "btnFilterReset";
+            this.btnFilterReset.Size = new System.Drawing.Size(80, 28);
+            this.btnFilterReset.TabIndex = 12;
+            this.btnFilterReset.Text = "重置";
+            // 
+            // txtBoxNo
+            // 
+            this.txtBoxNo.Location = new System.Drawing.Point(80, 12);
+            this.txtBoxNo.Name = "txtBoxNo";
+            this.txtBoxNo.Size = new System.Drawing.Size(120, 28);
+            this.txtBoxNo.TabIndex = 1;
+            // 
+            // txtScanner
+            // 
+            this.txtScanner.Location = new System.Drawing.Point(290, 12);
+            this.txtScanner.Name = "txtScanner";
+            this.txtScanner.Size = new System.Drawing.Size(120, 28);
+            this.txtScanner.TabIndex = 3;
+            // 
+            // txtStation
+            // 
+            this.txtStation.Location = new System.Drawing.Point(490, 12);
+            this.txtStation.Name = "txtStation";
+            this.txtStation.Size = new System.Drawing.Size(120, 28);
+            this.txtStation.TabIndex = 5;
+            // 
+            // cmbScanResult
+            // 
+            this.cmbScanResult.Location = new System.Drawing.Point(95, 50);
+            this.cmbScanResult.Name = "cmbScanResult";
+            this.cmbScanResult.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.cmbScanResult.Properties.Items.AddRange(new object[] {
+            "",
+            "成功",
+            "失败"});
+            this.cmbScanResult.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
+            this.cmbScanResult.Size = new System.Drawing.Size(120, 28);
+            this.cmbScanResult.TabIndex = 7;
+            // 
+            // dateStart
+            // 
+            this.dateStart.EditValue = null;
+            this.dateStart.Location = new System.Drawing.Point(313, 50);
+            this.dateStart.Name = "dateStart";
+            this.dateStart.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.dateStart.Properties.CalendarTimeProperties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.dateStart.Size = new System.Drawing.Size(140, 28);
+            this.dateStart.TabIndex = 9;
+            // 
+            // dateEnd
+            // 
+            this.dateEnd.EditValue = null;
+            this.dateEnd.Location = new System.Drawing.Point(560, 50);
+            this.dateEnd.Name = "dateEnd";
+            this.dateEnd.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.dateEnd.Properties.CalendarTimeProperties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.dateEnd.Size = new System.Drawing.Size(140, 28);
+            this.dateEnd.TabIndex = 11;
+            // 
             // gridControl1
             // 
             this.gridControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.gridControl1.Location = new System.Drawing.Point(0, 31);
+            this.gridControl1.Location = new System.Drawing.Point(0, 131);
             this.gridControl1.MainView = this.gridView1;
-            this.gridControl1.MenuManager = this.barManager1;
             this.gridControl1.Name = "gridControl1";
-            this.gridControl1.Size = new System.Drawing.Size(948, 427);
+            this.gridControl1.Size = new System.Drawing.Size(948, 278);
             this.gridControl1.TabIndex = 4;
             this.gridControl1.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gridView1});
@@ -75,6 +253,7 @@ namespace WCS_Login
             this.gridView1.GridControl = this.gridControl1;
             this.gridView1.Name = "gridView1";
             this.gridView1.OptionsSelection.MultiSelect = true;
+            this.gridView1.OptionsView.ShowGroupPanel = false;
             this.gridView1.CustomUnboundColumnData += new DevExpress.XtraGrid.Views.Base.CustomColumnDataEventHandler(this.gridView1_CustomUnboundColumnData);
             // 
             // gridColumnRowNo
@@ -166,7 +345,7 @@ namespace WCS_Login
             this.panelPagination.Controls.Add(this.btnNextPage);
             this.panelPagination.Controls.Add(this.btnPrevPage);
             this.panelPagination.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panelPagination.Location = new System.Drawing.Point(0, 429);
+            this.panelPagination.Location = new System.Drawing.Point(0, 409);
             this.panelPagination.Name = "panelPagination";
             this.panelPagination.Size = new System.Drawing.Size(948, 29);
             this.panelPagination.TabIndex = 5;
@@ -175,7 +354,6 @@ namespace WCS_Login
             // 
             this.txtPageNo.EditValue = "1";
             this.txtPageNo.Location = new System.Drawing.Point(92, 1);
-            this.txtPageNo.MenuManager = this.barManager1;
             this.txtPageNo.Name = "txtPageNo";
             this.txtPageNo.Properties.MaxLength = 5;
             this.txtPageNo.Size = new System.Drawing.Size(50, 28);
@@ -203,14 +381,26 @@ namespace WCS_Login
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(948, 478);
-            this.Controls.Add(this.panelPagination);
+            this.ClientSize = new System.Drawing.Size(948, 458);
             this.Controls.Add(this.gridControl1);
+            this.Controls.Add(this.panelPagination);
+            this.Controls.Add(this.panelControlSearch);
             this.Name = "FrmBoxScanRecord_Query";
-            this.Text = "FrmBoxScanRecord_Query";
+            this.Text = "周转箱扫描记录查询";
             this.Load += new System.EventHandler(this.FrmBoxScanRecord_Query_Load);
-            this.Controls.SetChildIndex(this.gridControl1, 0);
+            this.Controls.SetChildIndex(this.panelControlSearch, 0);
             this.Controls.SetChildIndex(this.panelPagination, 0);
+            this.Controls.SetChildIndex(this.gridControl1, 0);
+            ((System.ComponentModel.ISupportInitialize)(this.panelControlSearch)).EndInit();
+            this.panelControlSearch.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.txtBoxNo.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.txtScanner.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.txtStation.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cmbScanResult.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dateStart.Properties.CalendarTimeProperties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dateStart.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dateEnd.Properties.CalendarTimeProperties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dateEnd.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridControl1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridView1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.panelPagination)).EndInit();
@@ -233,6 +423,20 @@ namespace WCS_Login
         private DevExpress.XtraGrid.Columns.GridColumn gridColumn5;
         private DevExpress.XtraGrid.Columns.GridColumn gridColumn6;
         private DevExpress.XtraGrid.Columns.GridColumn gridColumn7;
+        private DevExpress.XtraEditors.PanelControl panelControlSearch;
+        private DevExpress.XtraEditors.LabelControl labelControlBoxNo;
+        private DevExpress.XtraEditors.TextEdit txtBoxNo;
+        private DevExpress.XtraEditors.LabelControl labelControlScanner;
+        private DevExpress.XtraEditors.TextEdit txtScanner;
+        private DevExpress.XtraEditors.LabelControl labelControlStation;
+        private DevExpress.XtraEditors.TextEdit txtStation;
+        private DevExpress.XtraEditors.LabelControl labelControlScanResult;
+        private DevExpress.XtraEditors.ComboBoxEdit cmbScanResult;
+        private DevExpress.XtraEditors.LabelControl labelControlStartDate;
+        private DevExpress.XtraEditors.DateEdit dateStart;
+        private DevExpress.XtraEditors.LabelControl labelControlEndDate;
+        private DevExpress.XtraEditors.DateEdit dateEnd;
+        private DevExpress.XtraEditors.SimpleButton btnFilterReset;
         private DevExpress.XtraEditors.PanelControl panelPagination;
         private DevExpress.XtraEditors.SimpleButton btnNextPage;
         private DevExpress.XtraEditors.SimpleButton btnPrevPage;

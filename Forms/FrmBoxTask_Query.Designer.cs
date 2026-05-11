@@ -28,6 +28,18 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.panelControlSearch = new DevExpress.XtraEditors.PanelControl();
+            this.labelControlTaskRule = new DevExpress.XtraEditors.LabelControl();
+            this.labelControlTaskType = new DevExpress.XtraEditors.LabelControl();
+            this.labelControlBoxNo = new DevExpress.XtraEditors.LabelControl();
+            this.labelControlEndDate = new DevExpress.XtraEditors.LabelControl();
+            this.labelControlStartDate = new DevExpress.XtraEditors.LabelControl();
+            this.btnFilterReset = new DevExpress.XtraEditors.SimpleButton();
+            this.dateEnd = new DevExpress.XtraEditors.DateEdit();
+            this.dateStart = new DevExpress.XtraEditors.DateEdit();
+            this.txtTaskRule = new DevExpress.XtraEditors.TextEdit();
+            this.cmbTaskType = new DevExpress.XtraEditors.ComboBoxEdit();
+            this.txtBoxNo = new DevExpress.XtraEditors.TextEdit();
             this.gridControl1 = new DevExpress.XtraGrid.GridControl();
             this.gridView1 = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.gridColumnRowNo = new DevExpress.XtraGrid.Columns.GridColumn();
@@ -38,18 +50,158 @@
             this.gridColumn5 = new DevExpress.XtraGrid.Columns.GridColumn();
             this.gridColumn6 = new DevExpress.XtraGrid.Columns.GridColumn();
             this.gridColumn7 = new DevExpress.XtraGrid.Columns.GridColumn();
+            ((System.ComponentModel.ISupportInitialize)(this.panelControlSearch)).BeginInit();
+            this.panelControlSearch.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dateEnd.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dateEnd.Properties.CalendarTimeProperties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dateStart.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dateStart.Properties.CalendarTimeProperties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.txtTaskRule.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cmbTaskType.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.txtBoxNo.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridControl1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridView1)).BeginInit();
             this.SuspendLayout();
             // 
+            // panelControlSearch
+            // 
+            this.panelControlSearch.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
+            this.panelControlSearch.Controls.Add(this.labelControlTaskRule);
+            this.panelControlSearch.Controls.Add(this.labelControlTaskType);
+            this.panelControlSearch.Controls.Add(this.labelControlBoxNo);
+            this.panelControlSearch.Controls.Add(this.labelControlEndDate);
+            this.panelControlSearch.Controls.Add(this.labelControlStartDate);
+            this.panelControlSearch.Controls.Add(this.btnFilterReset);
+            this.panelControlSearch.Controls.Add(this.dateEnd);
+            this.panelControlSearch.Controls.Add(this.dateStart);
+            this.panelControlSearch.Controls.Add(this.txtTaskRule);
+            this.panelControlSearch.Controls.Add(this.cmbTaskType);
+            this.panelControlSearch.Controls.Add(this.txtBoxNo);
+            this.panelControlSearch.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panelControlSearch.Location = new System.Drawing.Point(0, 31);
+            this.panelControlSearch.Name = "panelControlSearch";
+            this.panelControlSearch.Size = new System.Drawing.Size(800, 100);
+            this.panelControlSearch.TabIndex = 5;
+            // 
+            // labelControlTaskRule
+            // 
+            this.labelControlTaskRule.Appearance.Options.UseTextOptions = true;
+            this.labelControlTaskRule.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
+            this.labelControlTaskRule.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
+            this.labelControlTaskRule.Location = new System.Drawing.Point(490, 12);
+            this.labelControlTaskRule.Name = "labelControlTaskRule";
+            this.labelControlTaskRule.Size = new System.Drawing.Size(100, 24);
+            this.labelControlTaskRule.TabIndex = 4;
+            this.labelControlTaskRule.Text = "任务规则：";
+            // 
+            // labelControlTaskType
+            // 
+            this.labelControlTaskType.Appearance.Options.UseTextOptions = true;
+            this.labelControlTaskType.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
+            this.labelControlTaskType.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
+            this.labelControlTaskType.Location = new System.Drawing.Point(250, 12);
+            this.labelControlTaskType.Name = "labelControlTaskType";
+            this.labelControlTaskType.Size = new System.Drawing.Size(100, 24);
+            this.labelControlTaskType.TabIndex = 2;
+            this.labelControlTaskType.Text = "任务类型：";
+            // 
+            // labelControlBoxNo
+            // 
+            this.labelControlBoxNo.Appearance.Options.UseTextOptions = true;
+            this.labelControlBoxNo.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
+            this.labelControlBoxNo.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
+            this.labelControlBoxNo.Location = new System.Drawing.Point(12, 12);
+            this.labelControlBoxNo.Name = "labelControlBoxNo";
+            this.labelControlBoxNo.Size = new System.Drawing.Size(80, 24);
+            this.labelControlBoxNo.TabIndex = 0;
+            this.labelControlBoxNo.Text = "箱号：";
+            // 
+            // labelControlEndDate
+            // 
+            this.labelControlEndDate.Appearance.Options.UseTextOptions = true;
+            this.labelControlEndDate.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
+            this.labelControlEndDate.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
+            this.labelControlEndDate.Location = new System.Drawing.Point(250, 50);
+            this.labelControlEndDate.Name = "labelControlEndDate";
+            this.labelControlEndDate.Size = new System.Drawing.Size(100, 24);
+            this.labelControlEndDate.TabIndex = 8;
+            this.labelControlEndDate.Text = "结束时间：";
+            // 
+            // labelControlStartDate
+            // 
+            this.labelControlStartDate.Appearance.Options.UseTextOptions = true;
+            this.labelControlStartDate.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
+            this.labelControlStartDate.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
+            this.labelControlStartDate.Location = new System.Drawing.Point(12, 50);
+            this.labelControlStartDate.Name = "labelControlStartDate";
+            this.labelControlStartDate.Size = new System.Drawing.Size(90, 24);
+            this.labelControlStartDate.TabIndex = 6;
+            this.labelControlStartDate.Text = "开始时间：";
+            // 
+            // btnFilterReset
+            // 
+            this.btnFilterReset.Location = new System.Drawing.Point(660, 48);
+            this.btnFilterReset.Name = "btnFilterReset";
+            this.btnFilterReset.Size = new System.Drawing.Size(80, 28);
+            this.btnFilterReset.TabIndex = 11;
+            this.btnFilterReset.Text = "重置";
+            // 
+            // dateEnd
+            // 
+            this.dateEnd.EditValue = null;
+            this.dateEnd.Location = new System.Drawing.Point(360, 50);
+            this.dateEnd.Name = "dateEnd";
+            this.dateEnd.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.dateEnd.Properties.CalendarTimeProperties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.dateEnd.Size = new System.Drawing.Size(140, 28);
+            this.dateEnd.TabIndex = 9;
+            // 
+            // dateStart
+            // 
+            this.dateStart.EditValue = null;
+            this.dateStart.Location = new System.Drawing.Point(100, 50);
+            this.dateStart.Name = "dateStart";
+            this.dateStart.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.dateStart.Properties.CalendarTimeProperties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.dateStart.Size = new System.Drawing.Size(140, 28);
+            this.dateStart.TabIndex = 7;
+            // 
+            // txtTaskRule
+            // 
+            this.txtTaskRule.Location = new System.Drawing.Point(600, 12);
+            this.txtTaskRule.Name = "txtTaskRule";
+            this.txtTaskRule.Size = new System.Drawing.Size(140, 28);
+            this.txtTaskRule.TabIndex = 5;
+            // 
+            // cmbTaskType
+            // 
+            this.cmbTaskType.Location = new System.Drawing.Point(360, 12);
+            this.cmbTaskType.Name = "cmbTaskType";
+            this.cmbTaskType.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.cmbTaskType.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
+            this.cmbTaskType.Size = new System.Drawing.Size(120, 28);
+            this.cmbTaskType.TabIndex = 3;
+            // 
+            // txtBoxNo
+            // 
+            this.txtBoxNo.Location = new System.Drawing.Point(100, 12);
+            this.txtBoxNo.Name = "txtBoxNo";
+            this.txtBoxNo.Size = new System.Drawing.Size(140, 28);
+            this.txtBoxNo.TabIndex = 1;
+            // 
             // gridControl1
             // 
             this.gridControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.gridControl1.Location = new System.Drawing.Point(0, 31);
+            this.gridControl1.Location = new System.Drawing.Point(0, 131);
             this.gridControl1.MainView = this.gridView1;
             this.gridControl1.MenuManager = this.barManager1;
             this.gridControl1.Name = "gridControl1";
-            this.gridControl1.Size = new System.Drawing.Size(800, 399);
+            this.gridControl1.Size = new System.Drawing.Size(800, 299);
             this.gridControl1.TabIndex = 4;
             this.gridControl1.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gridView1});
@@ -160,10 +312,21 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.gridControl1);
+            this.Controls.Add(this.panelControlSearch);
             this.Name = "FrmBoxTask_Query";
-            this.Text = "FrmBoxTask_Query";
+            this.Text = "周转箱任务查询";
             this.Load += new System.EventHandler(this.FrmBoxTask_Query_Load);
+            this.Controls.SetChildIndex(this.panelControlSearch, 0);
             this.Controls.SetChildIndex(this.gridControl1, 0);
+            ((System.ComponentModel.ISupportInitialize)(this.panelControlSearch)).EndInit();
+            this.panelControlSearch.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dateEnd.Properties.CalendarTimeProperties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dateEnd.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dateStart.Properties.CalendarTimeProperties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dateStart.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.txtTaskRule.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.cmbTaskType.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.txtBoxNo.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridControl1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridView1)).EndInit();
             this.ResumeLayout(false);
@@ -183,5 +346,17 @@
         private DevExpress.XtraGrid.Columns.GridColumn gridColumn5;
         private DevExpress.XtraGrid.Columns.GridColumn gridColumn6;
         private DevExpress.XtraGrid.Columns.GridColumn gridColumn7;
+        private DevExpress.XtraEditors.PanelControl panelControlSearch;
+        private DevExpress.XtraEditors.LabelControl labelControlBoxNo;
+        private DevExpress.XtraEditors.TextEdit txtBoxNo;
+        private DevExpress.XtraEditors.LabelControl labelControlTaskType;
+        private DevExpress.XtraEditors.ComboBoxEdit cmbTaskType;
+        private DevExpress.XtraEditors.LabelControl labelControlTaskRule;
+        private DevExpress.XtraEditors.TextEdit txtTaskRule;
+        private DevExpress.XtraEditors.LabelControl labelControlStartDate;
+        private DevExpress.XtraEditors.DateEdit dateStart;
+        private DevExpress.XtraEditors.LabelControl labelControlEndDate;
+        private DevExpress.XtraEditors.DateEdit dateEnd;
+        private DevExpress.XtraEditors.SimpleButton btnFilterReset;
     }
 }

@@ -77,10 +77,57 @@ namespace WCS_Login
         /// </summary>
         private void LoadData()
         {
-            string sql = "SELECT Id, BoxNo, TaskType, TaskRule, CreateTime, CreateUser, Remark FROM T_Box_Task";
-            _dataTable = DbHelper.ExecuteQuery(sql);
-            gridControl1.DataSource = _dataTable;
-            if (_dataTable != null) { _dataTable.AcceptChanges(); }
+            try
+            {
+                List<SqlParameter> parameters = new List<SqlParameter>();
+                string whereClause = BuildWhereClause(parameters);
+
+                string sql = $"SELECT Id, BoxNo, TaskType, TaskRule, CreateTime, CreateUser, Remark FROM T_Box_Task {whereClause} ORDER BY CreateTime DESC";
+                _dataTable = DbHelper.ExecuteQuery(sql, parameters.ToArray());
+                gridControl1.DataSource = _dataTable;
+                if (_dataTable != null) { _dataTable.AcceptChanges(); }
+            }
+            catch (Exception ex)
+            {
+                XtraMessageBox.Show($"数据库连接失败：{ex.Message}", "错误",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>
+        /// 构建筛选 WHERE 子句和参数（每次调用创建新的参数实例）
+        /// </summary>
+        private string BuildWhereClause(List<SqlParameter> parameters)
+        {
+            List<string> whereConditions = new List<string>();
+
+            if (!string.IsNullOrWhiteSpace(txtBoxNo.Text))
+            {
+                whereConditions.Add("BoxNo LIKE @BoxNo");
+                parameters.Add(new SqlParameter("@BoxNo", SqlDbType.NVarChar, 50) { Value = "%" + txtBoxNo.Text.Trim() + "%" });
+            }
+            if (!string.IsNullOrWhiteSpace(cmbTaskType.Text))
+            {
+                whereConditions.Add("TaskType = @TaskType");
+                parameters.Add(new SqlParameter("@TaskType", SqlDbType.NVarChar, 20) { Value = cmbTaskType.Text.Trim() });
+            }
+            if (!string.IsNullOrWhiteSpace(txtTaskRule.Text))
+            {
+                whereConditions.Add("TaskRule LIKE @TaskRule");
+                parameters.Add(new SqlParameter("@TaskRule", SqlDbType.NVarChar, 100) { Value = "%" + txtTaskRule.Text.Trim() + "%" });
+            }
+            if (dateStart.EditValue != null && dateStart.DateTime != DateTime.MinValue)
+            {
+                whereConditions.Add("CreateTime >= @StartTime");
+                parameters.Add(new SqlParameter("@StartTime", SqlDbType.DateTime) { Value = dateStart.DateTime });
+            }
+            if (dateEnd.EditValue != null && dateEnd.DateTime != DateTime.MinValue)
+            {
+                whereConditions.Add("CreateTime <= @EndTime");
+                parameters.Add(new SqlParameter("@EndTime", SqlDbType.DateTime) { Value = dateEnd.DateTime });
+            }
+
+            return whereConditions.Count > 0 ? "WHERE " + string.Join(" AND ", whereConditions) : "";
         }
 
         /// <summary>
@@ -116,17 +163,15 @@ namespace WCS_Login
             {
                 LoadData();
 
-                // 记录日志
-                DbHelper.LogToDatabase(Program.CurrentUserName, "查询数据", "任务配置", "查询周转箱任务规则列表", "INFO");
-                Logger.Info($"用户 {Program.CurrentUserName} 查询周转箱任务规则");
+                DbHelper.LogToDatabase(Program.CurrentUserName, "筛选查询", "任务配置", "执行筛选查询", "INFO");
+                Logger.Info($"用户 {Program.CurrentUserName} 执行筛选查询周转箱任务规则");
 
                 XtraMessageBox.Show("查询成功！", "提示");
             }
             catch (Exception ex)
             {
-                DbHelper.LogToDatabase(Program.CurrentUserName, "查询数据", "任务配置", $"查询失败：{ex.Message}", "ERROR");
-                Logger.Error($"查询失败：{ex.Message}", Program.CurrentUserName);
-
+                DbHelper.LogToDatabase(Program.CurrentUserName, "筛选查询", "任务配置", $"查询失败：{ex.Message}", "ERROR");
+                Logger.Error($"筛选查询失败：{ex.Message}", Program.CurrentUserName);
                 XtraMessageBox.Show($"查询失败：{ex.Message}", "错误");
             }
         }
@@ -200,42 +245,42 @@ namespace WCS_Login
                         return;
                     }
 
-                if (row.RowState == DataRowState.Added)
-                {
-                    string insertSql = @"INSERT INTO T_Box_Task (BoxNo, TaskType, TaskRule, CreateUser, Remark)
-                                         VALUES (@BoxNo, @TaskType, @TaskRule, @CreateUser, @Remark)";
+                    if (row.RowState == DataRowState.Added)
+                    {
+                        string insertSql = @"INSERT INTO T_Box_Task (BoxNo, TaskType, TaskRule, CreateUser, Remark)
+                                             VALUES (@BoxNo, @TaskType, @TaskRule, @CreateUser, @Remark)";
 
-                    SqlParameter[] parameters = {
-                        new SqlParameter("@BoxNo", boxNo),
-                        new SqlParameter("@TaskType", string.IsNullOrEmpty(taskType) ? (object)DBNull.Value : taskType),
-                        new SqlParameter("@TaskRule", string.IsNullOrEmpty(taskRule) ? (object)DBNull.Value : taskRule),
-                        new SqlParameter("@CreateUser", string.IsNullOrEmpty(createUser) ? (object)DBNull.Value : createUser),
-                        new SqlParameter("@Remark", string.IsNullOrEmpty(remark) ? (object)DBNull.Value : remark)
-                    };
+                        SqlParameter[] parameters = {
+                            new SqlParameter("@BoxNo", boxNo),
+                            new SqlParameter("@TaskType", string.IsNullOrEmpty(taskType) ? (object)DBNull.Value : taskType),
+                            new SqlParameter("@TaskRule", string.IsNullOrEmpty(taskRule) ? (object)DBNull.Value : taskRule),
+                            new SqlParameter("@CreateUser", string.IsNullOrEmpty(createUser) ? (object)DBNull.Value : createUser),
+                            new SqlParameter("@Remark", string.IsNullOrEmpty(remark) ? (object)DBNull.Value : remark)
+                        };
 
-                    DbHelper.ExecuteNonQuery(insertSql, parameters);
-                    insertCount++;
-                }
-                else if (row.RowState == DataRowState.Modified)
-                {
-                    string id = row["Id"]?.ToString()?.Trim();
-                    string updateSql = @"UPDATE T_Box_Task
-                                         SET BoxNo = @BoxNo, TaskType = @TaskType, TaskRule = @TaskRule,
-                                             CreateUser = @CreateUser, Remark = @Remark
-                                         WHERE Id = @Id";
+                        DbHelper.ExecuteNonQuery(insertSql, parameters);
+                        insertCount++;
+                    }
+                    else if (row.RowState == DataRowState.Modified)
+                    {
+                        string id = row["Id"]?.ToString()?.Trim();
+                        string updateSql = @"UPDATE T_Box_Task
+                                             SET BoxNo = @BoxNo, TaskType = @TaskType, TaskRule = @TaskRule,
+                                                 CreateUser = @CreateUser, Remark = @Remark
+                                             WHERE Id = @Id";
 
-                    SqlParameter[] parameters = {
-                        new SqlParameter("@BoxNo", boxNo),
-                        new SqlParameter("@TaskType", string.IsNullOrEmpty(taskType) ? (object)DBNull.Value : taskType),
-                        new SqlParameter("@TaskRule", string.IsNullOrEmpty(taskRule) ? (object)DBNull.Value : taskRule),
-                        new SqlParameter("@CreateUser", string.IsNullOrEmpty(createUser) ? (object)DBNull.Value : createUser),
-                        new SqlParameter("@Remark", string.IsNullOrEmpty(remark) ? (object)DBNull.Value : remark),
-                        new SqlParameter("@Id", id)
-                    };
+                        SqlParameter[] parameters = {
+                            new SqlParameter("@BoxNo", boxNo),
+                            new SqlParameter("@TaskType", string.IsNullOrEmpty(taskType) ? (object)DBNull.Value : taskType),
+                            new SqlParameter("@TaskRule", string.IsNullOrEmpty(taskRule) ? (object)DBNull.Value : taskRule),
+                            new SqlParameter("@CreateUser", string.IsNullOrEmpty(createUser) ? (object)DBNull.Value : createUser),
+                            new SqlParameter("@Remark", string.IsNullOrEmpty(remark) ? (object)DBNull.Value : remark),
+                            new SqlParameter("@Id", id)
+                        };
 
-                    int rows = DbHelper.ExecuteNonQuery(updateSql, parameters);
-                    updateCount += rows;
-                }
+                        int rows = DbHelper.ExecuteNonQuery(updateSql, parameters);
+                        updateCount += rows;
+                    }
             }
 
             if (insertCount > 0 || updateCount > 0)

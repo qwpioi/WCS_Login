@@ -246,6 +246,8 @@
             "箱子已到达站点查询"}, 11);
             this.treeList1.EndUnboundLoad();
             this.treeList1.OptionsBehavior.Editable = false;
+            this.treeList1.OptionsView.ShowRoot = false; // 隐藏根节点的展开/折叠图标
+            this.treeList1.ExpandAll(); // 展开所有节点
             this.treeList1.Size = new System.Drawing.Size(249, 387);
             this.treeList1.TabIndex = 0;
             this.treeList1.FocusedNodeChanged += new DevExpress.XtraTreeList.FocusedNodeChangedEventHandler(this.treeList1_FocusedNodeChanged);

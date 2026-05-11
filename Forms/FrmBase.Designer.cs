@@ -210,7 +210,7 @@
         protected DevExpress.XtraBars.BarDockControl barDockControlBottom;
         protected DevExpress.XtraBars.BarDockControl barDockControlLeft;
         protected DevExpress.XtraBars.BarDockControl barDockControlRight;
-        private DevExpress.XtraBars.BarButtonItem btnAdd;
-        private DevExpress.XtraBars.BarButtonItem btnImport;
+        protected DevExpress.XtraBars.BarButtonItem btnAdd;
+        protected DevExpress.XtraBars.BarButtonItem btnImport;
     }
 }

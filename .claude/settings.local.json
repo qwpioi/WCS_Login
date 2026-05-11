@@ -11,7 +11,12 @@
       "Bash(msbuild WCS_Login.csproj -t:Build -p:Configuration=Debug)",
       "Bash(dotnet build *)",
       "Bash(msbuild WCS_Login.sln /t:Build /p:Configuration=Debug /v:quiet)",
-      "Bash(git status *)"
+      "Bash(git status *)",
+      "WebSearch",
+      "Bash(del *)",
+      "Bash(git checkout *)",
+      "Bash(git add *)",
+      "Bash(git commit *)"
     ]
   }
 }

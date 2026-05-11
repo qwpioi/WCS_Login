@@ -179,6 +179,9 @@ namespace WCS_Login
                     return new FrmPLC_Monitor();
                 case "站点信息配置":  // ← 添加这个
                     return new FrmStation_Config();
+                // ✅ 新增这一行
+                case "BCR 扫描率统计":
+                    return new FrmBCRScanRate_Statistics();
                 default:
                     XtraMessageBox.Show($"暂未实现：{menuText}");
                     return null;

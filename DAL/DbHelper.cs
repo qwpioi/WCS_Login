@@ -44,6 +44,21 @@ namespace WCS_Login
         }
 
         /// <summary>
+        /// 克隆 SqlParameter 数组，避免跨命令复用导致的错误
+        /// </summary>
+        private static SqlParameter[] CloneParameters(SqlParameter[] source)
+        {
+            if (source == null || source.Length == 0) return source;
+
+            SqlParameter[] cloned = new SqlParameter[source.Length];
+            for (int i = 0; i < source.Length; i++)
+            {
+                cloned[i] = ((ICloneable)source[i]).Clone() as SqlParameter;
+            }
+            return cloned;
+        }
+
+        /// <summary>
         /// 执行查询，返回 DataTable
         /// </summary>
         public static DataTable ExecuteQuery(string sql, SqlParameter[] parameters = null)
@@ -56,7 +71,7 @@ namespace WCS_Login
                     {
                         if (parameters != null)
                         {
-                            cmd.Parameters.AddRange(parameters);
+                            cmd.Parameters.AddRange(CloneParameters(parameters));
                         }
 
                         conn.Open();
@@ -86,7 +101,7 @@ namespace WCS_Login
                     {
                         if (parameters != null)
                         {
-                            cmd.Parameters.AddRange(parameters);
+                            cmd.Parameters.AddRange(CloneParameters(parameters));
                         }
 
                         conn.Open();

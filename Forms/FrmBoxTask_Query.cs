@@ -18,6 +18,12 @@ namespace WCS_Login
         private DataTable _dataTable;
         private DevExpress.XtraEditors.Repository.RepositoryItemComboBox repositoryTaskType;
 
+        // 分页变量
+        private int _currentPage = 1;
+        private const int PageSize = 22;
+        private int _totalRecords = 0;
+        private int _totalPages = 0;
+
         public FrmBoxTask_Query()
         {
             InitializeComponent();
@@ -73,7 +79,18 @@ namespace WCS_Login
         }
 
         /// <summary>
-        /// 加载数据
+        /// 克隆 SqlParameter 数组（每次调用创建新实例，避免跨 SqlCommand 复用报错）
+        /// </summary>
+        private SqlParameter[] CloneParameters(SqlParameter[] original)
+        {
+            return original.Select(p => new SqlParameter(p.ParameterName, p.SqlDbType, p.Size)
+            {
+                Value = p.Value ?? DBNull.Value
+            }).ToArray();
+        }
+
+        /// <summary>
+        /// 加载数据（分页查询，支持筛选）
         /// </summary>
         private void LoadData()
         {
@@ -82,10 +99,37 @@ namespace WCS_Login
                 List<SqlParameter> parameters = new List<SqlParameter>();
                 string whereClause = BuildWhereClause(parameters);
 
-                string sql = $"SELECT Id, BoxNo, TaskType, TaskRule, CreateTime, CreateUser, Remark FROM T_Box_Task {whereClause} ORDER BY CreateTime DESC";
-                _dataTable = DbHelper.ExecuteQuery(sql, parameters.ToArray());
+                // 查询总记录数
+                string countSql = $"SELECT COUNT(*) FROM T_Box_Task {whereClause}";
+                DataTable dtCount = DbHelper.ExecuteQuery(countSql, parameters.ToArray());
+                _totalRecords = dtCount.Rows.Count > 0 ? Convert.ToInt32(dtCount.Rows[0][0]) : 0;
+                _totalPages = (_totalRecords + PageSize - 1) / PageSize;
+
+                if (_currentPage > _totalPages) _currentPage = Math.Max(1, _totalPages);
+
+                // 为分页查询创建新的参数实例（SqlParameter 不能跨 SqlCommand 复用）
+                SqlParameter[] pageParams = CloneParameters(parameters.ToArray());
+                List<SqlParameter> finalParams = new List<SqlParameter>(pageParams);
+                finalParams.Add(new SqlParameter("@StartRow", SqlDbType.Int) { Value = (_currentPage - 1) * PageSize + 1 });
+                finalParams.Add(new SqlParameter("@EndRow", SqlDbType.Int) { Value = _currentPage * PageSize });
+
+                // ROW_NUMBER() 分页查询，按创建时间倒序
+                string sql = $@"
+                    SELECT Id, BoxNo, TaskType, TaskRule, CreateTime, CreateUser, Remark
+                    FROM (
+                        SELECT Id, BoxNo, TaskType, TaskRule, CreateTime, CreateUser, Remark,
+                               ROW_NUMBER() OVER (ORDER BY CreateTime DESC) AS RowNum
+                        FROM T_Box_Task
+                        {whereClause}
+                    ) AS t
+                    WHERE RowNum BETWEEN @StartRow AND @EndRow
+                    ORDER BY CreateTime DESC";
+
+                _dataTable = DbHelper.ExecuteQuery(sql, finalParams.ToArray());
                 gridControl1.DataSource = _dataTable;
                 if (_dataTable != null) { _dataTable.AcceptChanges(); }
+
+                UpdatePageInfo();
             }
             catch (Exception ex)
             {
@@ -155,12 +199,53 @@ namespace WCS_Login
         }
 
         /// <summary>
-        /// 重写查询按钮事件
+        /// 更新分页信息显示到标题栏
+        /// </summary>
+        private void UpdatePageInfo()
+        {
+            this.Text = $"周转箱任务查询 — 第 {_currentPage}/{_totalPages} 页，共 {_totalRecords} 条记录";
+
+            // 更新分页信息标签
+            if (labelControlPageInfo != null)
+                labelControlPageInfo.Text = $"共 {_totalPages} 页，当前第 {_currentPage} 页";
+
+            // 更新页码输入框
+            if (txtPageNo != null)
+                txtPageNo.EditValue = _currentPage.ToString();
+        }
+
+        /// <summary>
+        /// 上一页
+        /// </summary>
+        private void PrevPage()
+        {
+            if (_currentPage > 1)
+            {
+                _currentPage--;
+                LoadData();
+            }
+        }
+
+        /// <summary>
+        /// 下一页
+        /// </summary>
+        private void NextPage()
+        {
+            if (_currentPage < _totalPages)
+            {
+                _currentPage++;
+                LoadData();
+            }
+        }
+
+        /// <summary>
+        /// 重写查询按钮事件 - 使用搜索面板的筛选条件进行查询
         /// </summary>
         protected override void BtnQuery_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             try
             {
+                _currentPage = 1; // 重置到第一页
                 LoadData();
 
                 DbHelper.LogToDatabase(Program.CurrentUserName, "筛选查询", "任务配置", "执行筛选查询", "INFO");
@@ -173,6 +258,29 @@ namespace WCS_Login
                 DbHelper.LogToDatabase(Program.CurrentUserName, "筛选查询", "任务配置", $"查询失败：{ex.Message}", "ERROR");
                 Logger.Error($"筛选查询失败：{ex.Message}", Program.CurrentUserName);
                 XtraMessageBox.Show($"查询失败：{ex.Message}", "错误");
+            }
+        }
+
+        /// <summary>
+        /// 重写刷新按钮事件
+        /// </summary>
+        protected override void BtnRefresh_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            try
+            {
+                _currentPage = 1; // 重置到第一页
+                LoadData();
+
+                Logger.Info($"用户 {Program.CurrentUserName} 刷新周转箱任务规则数据");
+
+                WcsController.LoadBoxRuleCache();
+
+                XtraMessageBox.Show("刷新成功！", "提示");
+            }
+            catch (Exception ex)
+            {
+                Logger.Error($"刷新失败：{ex.Message}", Program.CurrentUserName);
+                XtraMessageBox.Show($"刷新失败：{ex.Message}", "错误");
             }
         }
 
@@ -206,112 +314,6 @@ namespace WCS_Login
 
                 XtraMessageBox.Show($"导出失败：{ex.Message}", "错误");
             }
-        }
-
-        /// <summary>
-        /// 重写保存按钮事件
-        /// </summary>
-        protected override void BtnSave_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
-        {
-            try
-            {
-                gridView1.CloseEditor();
-                gridView1.UpdateCurrentRow();
-
-                if (_dataTable == null || _dataTable.Rows.Count == 0)
-                {
-                    XtraMessageBox.Show("没有要保存的数据！", "提示");
-                    return;
-                }
-
-                int insertCount = 0, updateCount = 0;
-
-                foreach (DataRow row in _dataTable.Rows)
-                {
-                    if (row.RowState == DataRowState.Deleted) continue;
-
-                    string boxNo = row["BoxNo"]?.ToString()?.Trim();
-                    string taskType = row["TaskType"]?.ToString()?.Trim();
-
-                    if (string.IsNullOrEmpty(boxNo) && string.IsNullOrEmpty(taskType)) continue;
-
-                    string taskRule = row["TaskRule"]?.ToString()?.Trim();
-                    string createUser = row["CreateUser"]?.ToString()?.Trim();
-                    string remark = row["Remark"]?.ToString()?.Trim();
-
-                    if (string.IsNullOrEmpty(boxNo))
-                    {
-                        XtraMessageBox.Show($"任务类型 {taskType} 的箱号不能为空！", "提示");
-                        return;
-                    }
-
-                    if (row.RowState == DataRowState.Added)
-                    {
-                        string insertSql = @"INSERT INTO T_Box_Task (BoxNo, TaskType, TaskRule, CreateUser, Remark)
-                                             VALUES (@BoxNo, @TaskType, @TaskRule, @CreateUser, @Remark)";
-
-                        SqlParameter[] parameters = {
-                            new SqlParameter("@BoxNo", boxNo),
-                            new SqlParameter("@TaskType", string.IsNullOrEmpty(taskType) ? (object)DBNull.Value : taskType),
-                            new SqlParameter("@TaskRule", string.IsNullOrEmpty(taskRule) ? (object)DBNull.Value : taskRule),
-                            new SqlParameter("@CreateUser", string.IsNullOrEmpty(createUser) ? (object)DBNull.Value : createUser),
-                            new SqlParameter("@Remark", string.IsNullOrEmpty(remark) ? (object)DBNull.Value : remark)
-                        };
-
-                        DbHelper.ExecuteNonQuery(insertSql, parameters);
-                        insertCount++;
-                    }
-                    else if (row.RowState == DataRowState.Modified)
-                    {
-                        string id = row["Id"]?.ToString()?.Trim();
-                        string updateSql = @"UPDATE T_Box_Task
-                                             SET BoxNo = @BoxNo, TaskType = @TaskType, TaskRule = @TaskRule,
-                                                 CreateUser = @CreateUser, Remark = @Remark
-                                             WHERE Id = @Id";
-
-                        SqlParameter[] parameters = {
-                            new SqlParameter("@BoxNo", boxNo),
-                            new SqlParameter("@TaskType", string.IsNullOrEmpty(taskType) ? (object)DBNull.Value : taskType),
-                            new SqlParameter("@TaskRule", string.IsNullOrEmpty(taskRule) ? (object)DBNull.Value : taskRule),
-                            new SqlParameter("@CreateUser", string.IsNullOrEmpty(createUser) ? (object)DBNull.Value : createUser),
-                            new SqlParameter("@Remark", string.IsNullOrEmpty(remark) ? (object)DBNull.Value : remark),
-                            new SqlParameter("@Id", id)
-                        };
-
-                        int rows = DbHelper.ExecuteNonQuery(updateSql, parameters);
-                        updateCount += rows;
-                    }
-            }
-
-            if (insertCount > 0 || updateCount > 0)
-            {
-                int totalRows = insertCount + updateCount;
-                UpdateRowsAffected(totalRows, true);
-                
-                string msg = $"保存成功！";
-                if (insertCount > 0) msg += $"\n新增 {insertCount} 条";
-                if (updateCount > 0) msg += $"\n修改 {updateCount} 条";
-
-                DbHelper.LogToDatabase(Program.CurrentUserName, "保存数据", "任务配置", $"新增 {insertCount} 条，修改 {updateCount} 条", "INFO");
-                Logger.Info($"用户 {Program.CurrentUserName} 保存周转箱任务规则，新增 {insertCount} 条，修改 {updateCount} 条");
-                _dataTable.AcceptChanges();
-                XtraMessageBox.Show(msg, "提示");
-
-                WcsController.LoadBoxRuleCache();
-                LoadData();
-            }
-            else
-            {
-                UpdateRowsAffected(0, false);
-            }
-        }
-        catch (Exception ex)
-        {
-            UpdateRowsAffected(0, false);
-            DbHelper.LogToDatabase(Program.CurrentUserName, "保存数据", "任务配置", $"保存失败：{ex.Message}", "ERROR");
-            Logger.Error($"保存失败：{ex.Message}", Program.CurrentUserName);
-            XtraMessageBox.Show($"保存失败：{ex.Message}", "错误");
-        }
         }
 
         /// <summary>
@@ -490,29 +492,77 @@ namespace WCS_Login
             }
         }
 
+
+
         /// <summary>
-        /// 重写刷新按钮事件
+        /// 重置筛选条件按钮点击
         /// </summary>
-        protected override void BtnRefresh_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        private void btnFilterReset_Click(object sender, EventArgs e)
         {
-            try
+            txtBoxNo.Text = "";
+            cmbTaskType.SelectedIndex = -1;
+            cmbTaskType.Text = "";
+            txtTaskRule.Text = "";
+            dateStart.EditValue = null;
+            dateEnd.EditValue = null;
+
+            _currentPage = 1;
+            LoadData();
+        }
+
+        /// <summary>
+        /// 上一页按钮点击
+        /// </summary>
+        private void btnPrevPage_Click(object sender, EventArgs e)
+        {
+            if (_currentPage > 1)
             {
+                _currentPage--;
                 LoadData();
-
-                Logger.Info($"用户 {Program.CurrentUserName} 刷新周转箱任务规则数据");
-
-                WcsController.LoadBoxRuleCache();
-
-                XtraMessageBox.Show("刷新成功！", "提示");
+                UpdatePageInfo();
             }
-            catch (Exception ex)
+            else
             {
-                Logger.Error($"刷新失败：{ex.Message}", Program.CurrentUserName);
-                XtraMessageBox.Show($"刷新失败：{ex.Message}", "错误");
+                XtraMessageBox.Show("已经是第一页了！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
 
-
+        /// <summary>
+        /// 下一页按钮点击
+        /// </summary>
+        private void btnNextPage_Click(object sender, EventArgs e)
+        {
+            if (_currentPage < _totalPages)
+            {
+                _currentPage++;
+                LoadData();
+                UpdatePageInfo();
+            }
+            else
+            {
+                XtraMessageBox.Show("已经是最后一页了！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+        /// <summary>
+        /// 页码跳转
+        /// </summary>
+        private void txtPageNo_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                if (int.TryParse(txtPageNo.Text, out int page) && page >= 1 && page <= _totalPages)
+                {
+                    _currentPage = page;
+                    LoadData();
+                    UpdatePageInfo();
+                }
+                else
+                {
+                    XtraMessageBox.Show($"请输入 1 到 {_totalPages} 之间的页码", "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    txtPageNo.EditValue = _currentPage.ToString();
+                }
+            }
+        }
     }
 }

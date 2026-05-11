@@ -213,6 +213,7 @@ namespace WCS_Login
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.dateStart.Properties.CalendarTimeProperties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.dateStart.Properties.MaskSettings.Set("mask", "u");
             this.dateStart.Size = new System.Drawing.Size(140, 28);
             this.dateStart.TabIndex = 9;
             // 

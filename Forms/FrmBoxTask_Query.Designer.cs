@@ -50,6 +50,11 @@
             this.gridColumn5 = new DevExpress.XtraGrid.Columns.GridColumn();
             this.gridColumn6 = new DevExpress.XtraGrid.Columns.GridColumn();
             this.gridColumn7 = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.panelControlPagination = new DevExpress.XtraEditors.PanelControl();
+            this.txtPageNo = new DevExpress.XtraEditors.TextEdit();
+            this.labelControlPageInfo = new DevExpress.XtraEditors.LabelControl();
+            this.btnNextPage = new DevExpress.XtraEditors.SimpleButton();
+            this.btnPrevPage = new DevExpress.XtraEditors.SimpleButton();
             ((System.ComponentModel.ISupportInitialize)(this.panelControlSearch)).BeginInit();
             this.panelControlSearch.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dateEnd.Properties)).BeginInit();
@@ -61,6 +66,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.txtBoxNo.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridControl1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.panelControlPagination)).BeginInit();
+            this.panelControlPagination.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.txtPageNo.Properties)).BeginInit();
             this.SuspendLayout();
             // 
             // panelControlSearch
@@ -112,7 +120,7 @@
             this.labelControlBoxNo.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
             this.labelControlBoxNo.Location = new System.Drawing.Point(12, 12);
             this.labelControlBoxNo.Name = "labelControlBoxNo";
-            this.labelControlBoxNo.Size = new System.Drawing.Size(80, 24);
+            this.labelControlBoxNo.Size = new System.Drawing.Size(90, 24);
             this.labelControlBoxNo.TabIndex = 0;
             this.labelControlBoxNo.Text = "箱号：";
             // 
@@ -145,6 +153,7 @@
             this.btnFilterReset.Size = new System.Drawing.Size(80, 28);
             this.btnFilterReset.TabIndex = 11;
             this.btnFilterReset.Text = "重置";
+            this.btnFilterReset.Click += new System.EventHandler(this.btnFilterReset_Click);
             // 
             // dateEnd
             // 
@@ -201,11 +210,10 @@
             this.gridControl1.MainView = this.gridView1;
             this.gridControl1.MenuManager = this.barManager1;
             this.gridControl1.Name = "gridControl1";
-            this.gridControl1.Size = new System.Drawing.Size(800, 299);
+            this.gridControl1.Size = new System.Drawing.Size(800, 269);
             this.gridControl1.TabIndex = 4;
             this.gridControl1.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gridView1});
-            this.gridControl1.Load += new System.EventHandler(this.FrmBoxTask_Query_Load);
             // 
             // gridView1
             // 
@@ -306,17 +314,70 @@
             this.gridColumn7.VisibleIndex = 7;
             this.gridColumn7.Width = 30;
             // 
+            // panelControlPagination
+            // 
+            this.panelControlPagination.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
+            this.panelControlPagination.Controls.Add(this.txtPageNo);
+            this.panelControlPagination.Controls.Add(this.labelControlPageInfo);
+            this.panelControlPagination.Controls.Add(this.btnNextPage);
+            this.panelControlPagination.Controls.Add(this.btnPrevPage);
+            this.panelControlPagination.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panelControlPagination.Location = new System.Drawing.Point(0, 400);
+            this.panelControlPagination.Name = "panelControlPagination";
+            this.panelControlPagination.Size = new System.Drawing.Size(800, 30);
+            this.panelControlPagination.TabIndex = 6;
+            // 
+            // txtPageNo
+            // 
+            this.txtPageNo.EditValue = "1";
+            this.txtPageNo.Location = new System.Drawing.Point(236, 1);
+            this.txtPageNo.Name = "txtPageNo";
+            this.txtPageNo.Size = new System.Drawing.Size(38, 28);
+            this.txtPageNo.TabIndex = 3;
+            this.txtPageNo.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPageNo_KeyDown);
+            // 
+            // labelControlPageInfo
+            // 
+            this.labelControlPageInfo.Appearance.Options.UseTextOptions = true;
+            this.labelControlPageInfo.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Near;
+            this.labelControlPageInfo.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
+            this.labelControlPageInfo.Location = new System.Drawing.Point(0, 3);
+            this.labelControlPageInfo.Name = "labelControlPageInfo";
+            this.labelControlPageInfo.Size = new System.Drawing.Size(175, 28);
+            this.labelControlPageInfo.TabIndex = 2;
+            this.labelControlPageInfo.Text = "共 0 页，当前第 0 页";
+            // 
+            // btnNextPage
+            // 
+            this.btnNextPage.Location = new System.Drawing.Point(276, 1);
+            this.btnNextPage.Name = "btnNextPage";
+            this.btnNextPage.Size = new System.Drawing.Size(60, 28);
+            this.btnNextPage.TabIndex = 1;
+            this.btnNextPage.Text = "下一页";
+            this.btnNextPage.Click += new System.EventHandler(this.btnNextPage_Click);
+            // 
+            // btnPrevPage
+            // 
+            this.btnPrevPage.Location = new System.Drawing.Point(175, 1);
+            this.btnPrevPage.Name = "btnPrevPage";
+            this.btnPrevPage.Size = new System.Drawing.Size(60, 28);
+            this.btnPrevPage.TabIndex = 0;
+            this.btnPrevPage.Text = "上一页";
+            this.btnPrevPage.Click += new System.EventHandler(this.btnPrevPage_Click);
+            // 
             // FrmBoxTask_Query
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.gridControl1);
+            this.Controls.Add(this.panelControlPagination);
             this.Controls.Add(this.panelControlSearch);
             this.Name = "FrmBoxTask_Query";
             this.Text = "周转箱任务查询";
             this.Load += new System.EventHandler(this.FrmBoxTask_Query_Load);
             this.Controls.SetChildIndex(this.panelControlSearch, 0);
+            this.Controls.SetChildIndex(this.panelControlPagination, 0);
             this.Controls.SetChildIndex(this.gridControl1, 0);
             ((System.ComponentModel.ISupportInitialize)(this.panelControlSearch)).EndInit();
             this.panelControlSearch.ResumeLayout(false);
@@ -329,6 +390,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.txtBoxNo.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridControl1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.panelControlPagination)).EndInit();
+            this.panelControlPagination.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.txtPageNo.Properties)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -358,5 +422,10 @@
         private DevExpress.XtraEditors.LabelControl labelControlEndDate;
         private DevExpress.XtraEditors.DateEdit dateEnd;
         private DevExpress.XtraEditors.SimpleButton btnFilterReset;
+        private DevExpress.XtraEditors.PanelControl panelControlPagination;
+        private DevExpress.XtraEditors.SimpleButton btnPrevPage;
+        private DevExpress.XtraEditors.SimpleButton btnNextPage;
+        private DevExpress.XtraEditors.LabelControl labelControlPageInfo;
+        private DevExpress.XtraEditors.TextEdit txtPageNo;
     }
 }
